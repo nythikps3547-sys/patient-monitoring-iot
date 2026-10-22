@@ -1,1 +1,95 @@
 
+name: PatientCare Test Notification
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  send-test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Install Python dependencies
+        run: python -m pip install google-auth requests
+
+      - name: Send test notification
+        env:
+          GOOGLE_SERVICE_ACCOUNT_JSON: ${{ secrets.GOOGLE_SERVICE_ACCOUNT_JSON }}
+          PHONE_FCM_TOKEN: ${{ secrets.PHONE_FCM_TOKEN }}
+        run: |
+          python - <<'PY'
+          import json
+          import os
+          import sys
+          import urllib.error
+          import urllib.request
+
+          from google.auth.transport.requests import Request
+          from google.oauth2 import service_account
+
+          service_json = os.environ.get("GOOGLE_SERVICE_ACCOUNT_JSON", "")
+          phone_token = os.environ.get("PHONE_FCM_TOKEN", "").strip()
+
+          if not service_json:
+              sys.exit("ERROR: GOOGLE_SERVICE_ACCOUNT_JSON secret is missing.")
+
+          if not phone_token:
+              sys.exit("ERROR: PHONE_FCM_TOKEN secret is missing.")
+
+          try:
+              service_info = json.loads(service_json)
+          except json.JSONDecodeError:
+              sys.exit("ERROR: The service-account JSON secret is invalid.")
+
+          project_id = service_info.get("project_id")
+          if not project_id:
+              sys.exit("ERROR: The service-account JSON has no project_id.")
+
+          try:
+              credentials = service_account.Credentials.from_service_account_info(
+                  service_info,
+                  scopes=[
+                      "https://www.googleapis.com/auth/firebase.messaging"
+                  ],
+              )
+              credentials.refresh(Request())
+
+              payload = {
+                  "message": {
+                      "token": phone_token,
+                      "notification": {
+                          "title": "PatientCare test",
+                          "body": "Your PatientCare notification test is ready."
+                      }
+                  }
+              }
+
+              request = urllib.request.Request(
+                  "https://fcm.googleapis.com/v1/projects/"
+                  + project_id
+                  + "/messages:send",
+                  data=json.dumps(payload).encode("utf-8"),
+                  headers={
+                      "Authorization": "Bearer " + credentials.token,
+                      "Content-Type": "application/json",
+                  },
+                  method="POST",
+              )
+
+              with urllib.request.urlopen(request, timeout=30) as response:
+                  print("FCM response:", response.read().decode("utf-8"))
+                  print("Firebase accepted the notification request.")
+
+          except urllib.error.HTTPError as error:
+              print("Firebase returned HTTP", error.code)
+              print(error.read().decode("utf-8"))
+              sys.exit(1)
+
+          except Exception as error:
+              print("Notification test failed:", str(error))
+              sys.exit(1)
+          PY
+
