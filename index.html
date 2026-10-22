@@ -343,8 +343,28 @@
           vapidKey: VAPID_KEY,
           serviceWorkerRegistration: activeRegistration
         });
-        if (!token) throw new Error("Firebase did not return a registration token.");
-        status.textContent = "Browser registered successfully for notifications. No test message has been sent yet.";
+        if (!token) {
+  throw new Error("Firebase did not return a registration token.");
+}
+
+if (!auth.currentUser) {
+  throw new Error("Please sign in again before registering this device.");
+}
+
+const tokenKey = encodeURIComponent(token);
+const tokenRef = database.ref(
+  "users/" + auth.currentUser.uid +
+  "/notificationTokens/" + tokenKey
+);
+
+await tokenRef.set({
+  token: token,
+  platform: "web",
+  updatedAt: firebase.database.ServerValue.TIMESTAMP
+});
+
+status.textContent =
+  "This browser's notification token was saved successfully.";
       } catch (error) {
         status.textContent = "Notification setup failed: " + (error.message || String(error));
         console.error("PatientCare notification setup:", error);
