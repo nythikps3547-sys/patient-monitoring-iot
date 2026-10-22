@@ -14,7 +14,6 @@
     main { max-width:1100px; margin:auto; padding:0 18px 32px; }
     .tabs { display:flex; flex-wrap:wrap; gap:9px; margin-bottom:18px; }
     button { cursor:pointer; border:0; border-radius:9px; padding:11px 15px; font-weight:700; background:var(--blue); color:#081326; }
-    button:disabled { opacity:.6; cursor:wait; }
     .tab-button { background:var(--panel2); color:var(--text); }
     .tab-button.active { background:var(--blue); color:#081326; }
     .tab-panel { display:none; }
@@ -38,6 +37,11 @@
     .reminder-item { display:flex; justify-content:space-between; gap:12px; align-items:center; background:var(--panel2); padding:12px; border-radius:9px; margin-top:8px; }
     .small-button { padding:8px 11px; background:#334155; color:white; }
     .danger-button { background:#b91c1c; color:white; }
+    .chart-wrap { position:relative; height:280px; width:100%; margin-top:12px; }
+    .chart-note { font-size:12px; color:var(--muted); line-height:1.5; }
+    .emergency-numbers { display:grid; grid-template-columns:repeat(auto-fit,minmax(190px,1fr)); gap:12px; }
+    .emergency-number { display:block; padding:15px; border-radius:12px; background:var(--panel2); color:var(--text); text-decoration:none; border:1px solid #40516e; }
+    .emergency-number strong { display:block; font-size:27px; margin-top:6px; }
     .auth-card { max-width:460px; margin:18px auto 28px; }
     .auth-message { min-height:20px; color:var(--muted); font-size:14px; }
     .auth-actions { display:flex; gap:10px; flex-wrap:wrap; }
@@ -93,12 +97,23 @@
       </div>
 
       <article class="card">
+        <h2>Heart Rate History</h2>
+        <p class="hint">Live readings received while this dashboard remains open. General adult resting reference range: 60–100 BPM.</p>
+        <div class="chart-wrap"><canvas id="heartRateChart" aria-label="Heart rate history graph" role="img"></canvas></div>
+        <p class="chart-note">The reference lines are general adult guidance, not a diagnosis. Age, activity, symptoms and clinical context matter.</p>
+      </article>
+
+      <article class="card">
+        <h2>SpO₂ History</h2>
+        <p class="hint">Live readings received while this dashboard remains open. General reference range: 95–100% for many healthy adults.</p>
+        <div class="chart-wrap"><canvas id="spo2Chart" aria-label="SpO2 history graph" role="img"></canvas></div>
+        <p class="chart-note">Readings can be affected by sensor fit, movement, circulation and other factors. This project is not a medical device.</p>
+      </article>
+
+      <article class="card">
         <h2>Browser Notifications</h2>
         <p class="hint">Enable notifications on this device for PatientCare alerts.</p>
-        <div class="inline">
-          <button id="enableNotifications" type="button">Enable Notifications</button>
-          <button id="testNotification" class="secondary-button" type="button">Test Notification</button>
-        </div>
+        <button id="enableNotifications" type="button">Enable Notifications</button>
         <p id="notificationStatus" class="hint" role="status" aria-live="polite">Notifications are not configured yet.</p>
       </article>
 
@@ -116,7 +131,15 @@
         <p class="hint">This status follows the physical SOS button state received from Firebase.</p>
         <p id="sosTimestamp" class="hint" hidden></p>
       </article>
-      <p class="hint">The emergency card appears only when the physical SOS input reports an active emergency.</p>
+      <article class="card">
+        <h2>Emergency Contact Numbers — India</h2>
+        <p class="hint">Use these numbers for a real emergency. Tapping a number may open the phone dialler on supported devices; this website does not place calls automatically.</p>
+        <div class="emergency-numbers">
+          <a class="emergency-number" href="tel:108" aria-label="Call ambulance number 108">Ambulance<strong>108</strong></a>
+          <a class="emergency-number" href="tel:112" aria-label="Call national emergency number 112">National emergency<strong>112</strong></a>
+        </div>
+      </article>
+      <p class="hint">The emergency status card appears only when the physical SOS input reports an active emergency. The contact numbers remain visible here even when SOS is inactive.</p>
     </section>
 
     <section id="camera" class="tab-panel">
@@ -148,6 +171,7 @@
 
   <footer>PatientCare IoT • ESP32 • MAX30102 • ESP32-CAM. Use this dashboard as a project monitor, not as a substitute for professional medical equipment.</footer>
 
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-database-compat.js"></script>
@@ -167,6 +191,60 @@
 
     let database = null, auth = null, messaging = null, signedInUser = null;
     let databaseListenersStarted = false, cameraVisible = false;
+    let heartRateChart = null, spo2Chart = null;
+    const MAX_GRAPH_POINTS = 100;
+    const heartRateHistory = [];
+    const spo2History = [];
+
+    function createHistoryChart(canvasId, title, lineColor, minValue, maxValue, lowerRef, upperRef, unit) {
+      const canvas = $(canvasId);
+      if (!canvas || !window.Chart) return null;
+      return new Chart(canvas, {
+        type: "line",
+        data: {
+          labels: [],
+          datasets: [
+            { label: title, data: [], borderColor: lineColor, backgroundColor: lineColor, borderWidth: 2, pointRadius: 2, tension: 0.2, spanGaps: false },
+            { label: "Reference lower (" + lowerRef + unit + ")", data: [], borderColor: "#fbbf24", borderDash: [6, 5], borderWidth: 1.5, pointRadius: 0 },
+            { label: "Reference upper (" + upperRef + unit + ")", data: [], borderColor: "#34d399", borderDash: [6, 5], borderWidth: 1.5, pointRadius: 0 }
+          ]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          animation: false,
+          interaction: { intersect: false, mode: "index" },
+          plugins: { legend: { labels: { color: "#eef4ff" } } },
+          scales: {
+            x: { ticks: { color: "#a8b5cc", maxTicksLimit: 6 }, grid: { color: "rgba(168,181,204,0.12)" } },
+            y: { min: minValue, max: maxValue, ticks: { color: "#a8b5cc" }, grid: { color: "rgba(168,181,204,0.12)" }, title: { display: true, text: unit.trim(), color: "#a8b5cc" } }
+          }
+        }
+      });
+    }
+
+    function initialiseHistoryCharts() {
+      if (!window.Chart) {
+        showConnection("Chart library did not load. Check the internet connection and reload the dashboard.", true);
+        return;
+      }
+      if (!heartRateChart) heartRateChart = createHistoryChart("heartRateChart", "Heart rate", "#60a5fa", 30, 180, 60, 100, " BPM");
+      if (!spo2Chart) spo2Chart = createHistoryChart("spo2Chart", "SpO₂", "#c084fc", 70, 100, 95, 100, "%");
+    }
+
+    function addHistoryPoint(history, chart, rawValue) {
+      const value = Number(rawValue);
+      if (!Number.isFinite(value) || rawValue === null || rawValue === "") return;
+      const point = { time: new Date(), value };
+      history.push(point);
+      if (history.length > MAX_GRAPH_POINTS) history.shift();
+      if (!chart) return;
+      chart.data.labels = history.map((item) => item.time.toLocaleTimeString());
+      chart.data.datasets[0].data = history.map((item) => item.value);
+      chart.data.datasets[1].data = history.map(() => chart === heartRateChart ? 60 : 95);
+      chart.data.datasets[2].data = history.map(() => chart === heartRateChart ? 100 : 100);
+      chart.update("none");
+    }
 
     document.querySelectorAll(".tab-button").forEach((button) => {
       button.addEventListener("click", () => {
@@ -224,6 +302,7 @@
     function startDatabaseListeners() {
       if (!database || databaseListenersStarted || !signedInUser) return;
       databaseListenersStarted = true;
+      initialiseHistoryCharts();
       showConnection("Signed in; connecting to Firebase...");
 
       database.ref(".info/connected").on("value", (snapshot) => {
@@ -240,11 +319,13 @@
       database.ref("patient/heartRate").on("value", (snapshot) => {
         const value = snapshot.val();
         $("heartRate").textContent = value == null ? "--" : value;
+        addHistoryPoint(heartRateHistory, heartRateChart, value);
       }, (error) => showConnection("Heart-rate read error: " + error.message, true));
 
       database.ref("patient/spo2").on("value", (snapshot) => {
         const value = snapshot.val();
         $("spo2").textContent = value == null ? "--" : value;
+        addHistoryPoint(spo2History, spo2Chart, value);
       }, (error) => showConnection("SpO₂ read error: " + error.message, true));
 
       database.ref("patient/sos/active").on("value", (snapshot) => {
@@ -309,12 +390,14 @@
           return;
         }
 
+        // Register the worker at the current GitHub Pages project path.
         const registration = await navigator.serviceWorker.register(
           "./firebase-messaging-sw.js",
           { updateViaCache: "none" }
         );
         await registration.update();
 
+        // Wait specifically for this registration to become active.
         if (registration.installing) {
           await new Promise((resolve, reject) => {
             const worker = registration.installing;
@@ -343,63 +426,12 @@
           vapidKey: VAPID_KEY,
           serviceWorkerRegistration: activeRegistration
         });
-        if (!token) {
-  throw new Error("Firebase did not return a registration token.");
-}
-
-if (!auth.currentUser) {
-  throw new Error("Please sign in again before registering this device.");
-}
-
-const tokenKey = encodeURIComponent(token);
-const tokenRef = database.ref(
-  "users/" + auth.currentUser.uid +
-  "/notificationTokens/" + tokenKey
-);
-
-await tokenRef.set({
-  token: token,
-  platform: "web",
-  updatedAt: firebase.database.ServerValue.TIMESTAMP
-});
-
-status.textContent =
-  "This browser's notification token was saved successfully.";
+        if (!token) throw new Error("Firebase did not return a registration token.");
+        status.textContent = "Browser registered successfully for notifications. No test message has been sent yet.";
+        // Do not print or store the token in a public database.
       } catch (error) {
         status.textContent = "Notification setup failed: " + (error.message || String(error));
         console.error("PatientCare notification setup:", error);
-      } finally {
-        button.disabled = false;
-      }
-    }
-
-    async function sendTestNotification() {
-      const status = $("notificationStatus");
-      const button = $("testNotification");
-      button.disabled = true;
-      try {
-        if (!("Notification" in window) || !("serviceWorker" in navigator)) {
-          throw new Error("This browser does not support notifications or service workers.");
-        }
-        if (!window.isSecureContext) {
-          throw new Error("Open the HTTPS GitHub Pages website.");
-        }
-        if (Notification.permission !== "granted") {
-          status.textContent = "Click Enable Notifications first and allow permission.";
-          return;
-        }
-        const registration = await navigator.serviceWorker.ready;
-        if (!registration.active) {
-          throw new Error("Service worker is not active. Refresh the page and enable notifications again.");
-        }
-        await registration.showNotification("PatientCare Test", {
-          body: "Test successful! Browser notifications are working.",
-          tag: "patientcare-test"
-        });
-        status.textContent = "Test notification requested. Check your computer's notification area.";
-      } catch (error) {
-        status.textContent = "Test failed: " + (error.message || String(error));
-        console.error("PatientCare test notification:", error);
       } finally {
         button.disabled = false;
       }
@@ -411,7 +443,6 @@ status.textContent =
       database = firebase.database();
 
       $("enableNotifications").addEventListener("click", configureMessaging);
-      $("testNotification").addEventListener("click", sendTestNotification);
 
       $("loginForm").addEventListener("submit", async (event) => {
         event.preventDefault();
@@ -463,6 +494,10 @@ status.textContent =
           showConnection("Sign in to connect to Firebase.");
           $("heartRate").textContent = "--";
           $("spo2").textContent = "--";
+          heartRateHistory.length = 0;
+          spo2History.length = 0;
+          if (heartRateChart) { heartRateChart.data.labels = []; heartRateChart.data.datasets.forEach((dataset) => dataset.data = []); heartRateChart.update("none"); }
+          if (spo2Chart) { spo2Chart.data.labels = []; spo2Chart.data.datasets.forEach((dataset) => dataset.data = []); spo2Chart.update("none"); }
           setSosUnavailable();
         }
       });
