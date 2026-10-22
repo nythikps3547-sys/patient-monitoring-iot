@@ -98,6 +98,16 @@
         </article>
       </div>
       <article class="card">
+        <div class="card">
+  <h2>Browser Notifications</h2>
+  <p class="hint">Enable notifications on this device for PatientCare alerts.</p>
+  <button id="enableNotifications" type="button">
+    Enable Notifications
+  </button>
+  <p id="notificationStatus" class="hint" role="status">
+    Notifications are not configured yet.
+  </p>
+</div>
         <h2>Connection Status</h2>
         <div id="connectionStatus" class="status-line">Connecting to Firebase...</div>
         <p class="hint">The dashboard updates when new values are sent to the Firebase Realtime Database.</p>
@@ -148,6 +158,7 @@
   <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-database-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-messaging-compat.js"></script>
   <script>
     // Firebase project configuration
     const firebaseConfig = {
