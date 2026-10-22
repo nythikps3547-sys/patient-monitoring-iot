@@ -1,7 +1,7 @@
 
 name: PatientCare Test Notification
 
-on:
+"on":
   workflow_dispatch:
 
 permissions:
