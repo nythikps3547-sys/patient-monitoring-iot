@@ -472,15 +472,49 @@
     }
 
     // Shows a local browser notification after permission has been granted.
-    async function showPatientCareNotification(title, body, tag) {
-      if (!("Notification" in window) || Notification.permission !== "granted") {
-        const status = $("notificationStatus");
-        if (status) {
-          status.textContent =
-            "Alert detected, but notifications are not enabled. Click Enable Notifications and allow permission.";
-        }
-        return false;
-      }
+  async function showPatientCareNotification(title, body, tag) {
+  const status = document.getElementById("notificationStatus");
+
+  if (!("Notification" in window)) {
+    if (status) status.textContent =
+      "This browser does not support notifications.";
+    return false;
+  }
+
+  if (Notification.permission !== "granted") {
+    if (status) status.textContent =
+      "Notifications are not allowed. Check Chrome site settings.";
+    return false;
+  }
+
+  try {
+    // Direct foreground notification; does not depend on FCM.
+    const notification = new Notification(title, {
+      body: body,
+      tag: tag
+    });
+
+    notification.onclick = function () {
+      window.focus();
+      notification.close();
+    };
+
+    if (status) {
+      status.textContent = "Browser notification sent: " + title;
+    }
+
+    return true;
+  } catch (error) {
+    console.error("PatientCare notification error:", error);
+
+    if (status) {
+      status.textContent =
+        "Notification failed: " + error.message;
+    }
+
+    return false;
+  }
+}
 
       try {
         if ("serviceWorker" in navigator) {
