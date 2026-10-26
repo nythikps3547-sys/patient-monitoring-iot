@@ -184,16 +184,19 @@
           <div class="metric"><span id="heartRate">--</span> <span class="unit">BPM</span></div>
           <p class="hint">Live value received from Firebase.</p>
         </article>
+
         <article class="card">
           <div class="metric-label">SpO₂</div>
           <div class="metric"><span id="spo2">--</span> <span class="unit">%</span></div>
           <p class="hint">Live value received from Firebase.</p>
         </article>
+
         <article class="card">
           <div class="metric-label">Temperature</div>
           <div class="metric"><span id="temperature">--</span> <span class="unit">°C</span></div>
           <p class="hint">Live DHT11 temperature reading from Firebase.</p>
         </article>
+
         <article class="card">
           <div class="metric-label">Humidity</div>
           <div class="metric"><span id="humidity">--</span> <span class="unit">%</span></div>
@@ -252,6 +255,7 @@
         <p class="hint">This status follows the physical SOS button state received from Firebase.</p>
         <p id="sosTimestamp" class="hint" hidden></p>
       </article>
+
       <article class="card">
         <h2>Emergency Contact Numbers — India</h2>
         <p class="hint">Use these numbers for a real emergency. This website does not place calls automatically.</p>
@@ -413,7 +417,7 @@
         heartRateChart = createHistoryChart(
           "heartRateChart", "Heart rate", "#60a5fa",
           30, 180, 60, 100, " BPM"
-        );
+                  );
       }
 
       if (!spo2Chart) {
@@ -465,3 +469,763 @@
       $("sosTimestamp").hidden = true;
       $("sosTimestamp").textContent = "";
     }
+
+    async function showPatientCareNotification(title, body, tag) {
+      const status = $("notificationStatus");
+
+      if (!("Notification" in window)) {
+        if (status) status.textContent = "This browser does not support notifications.";
+        return false;
+      }
+
+      if (Notification.permission !== "granted") {
+        if (status) status.textContent = "Notifications are not allowed. Click Enable Notifications and allow them in Chrome.";
+        return false;
+      }
+
+      try {
+        if ("serviceWorker" in navigator) {
+          const registrations = await navigator.serviceWorker.getRegistrations();
+          const registration = registrations.find((item) => item.active);
+
+          if (registration && typeof registration.showNotification === "function") {
+            await registration.showNotification(title, {
+              body,
+              tag,
+              renotify: true
+            });
+          } else {
+            const notification = new Notification(title, { body, tag });
+            notification.onclick = () => {
+              window.focus();
+              notification.close();
+            };
+          }
+        } else {
+          const notification = new Notification(title, { body, tag });
+          notification.onclick = () => {
+            window.focus();
+            notification.close();
+          };
+        }
+
+        if (status) status.textContent = "Browser notification displayed: " + title;
+        return true;
+      } catch (error) {
+        console.error("PatientCare notification error:", error);
+        if (status) status.textContent = "Notification failed: " + (error.message || String(error));
+        return false;
+      }
+    }
+
+    function setSosStatus(isEmergency, timestamp) {
+      $("emergencyStatusCard").hidden = !isEmergency;
+      $("emergencyStatus").hidden = !isEmergency;
+      $("sosTimestamp").hidden = !isEmergency;
+
+      if (!isEmergency) {
+        $("emergencyStatus").textContent = "";
+        $("sosTimestamp").textContent = "";
+        return;
+      }
+
+      $("emergencyStatus").textContent = "SOS ALERT — EMERGENCY!";
+      $("emergencyStatus").style.background = "#4b151b";
+      $("emergencyStatus").style.color = "#fecaca";
+
+      if (timestamp) {
+        const date = new Date(timestamp);
+        $("sosTimestamp").textContent = "Last SOS time: " +
+          (Number.isNaN(date.getTime()) ? String(timestamp) : date.toLocaleString());
+      } else {
+        $("sosTimestamp").textContent = "SOS is active.";
+      }
+    }
+
+    function updateDhtStatusDisplay() {
+      const details = $("dhtConnectionDetails");
+
+      if (dhtSensorConnected === true) {
+        details.textContent =
+          "DHT11 connected: the ESP32 reports valid sensor readings. Temperature and humidity show the latest Firebase values.";
+        details.style.background = "#123b2b";
+        details.style.color = "#bbf7d0";
+      } else if (dhtSensorConnected === false) {
+        details.textContent =
+          "DHT11 not connected or reading invalid. Displayed temperature and humidity values may be old until valid readings resume.";
+        details.style.background = "#4b151b";
+        details.style.color = "#fecaca";
+      } else {
+        details.textContent =
+          "DHT11 connection status is not available yet. Waiting for /patient/dhtValid from the ESP32.";
+        details.style.background = "#334155";
+        details.style.color = "#eef4ff";
+      }
+    }
+
+    function updateEnvironmentAlerts() {
+      const card = $("environmentAlertsCard");
+      const showTemperature = dhtSensorConnected === true && temperatureAlertActive;
+      const showHumidity = dhtSensorConnected === true && humidityAlertActive;
+
+      $("temperatureAlert").hidden = !showTemperature;
+      $("humidityAlert").hidden = !showHumidity;
+      $("temperatureAlert").textContent = "Temperature is outside the configured reference range.";
+      $("humidityAlert").textContent = "Humidity is outside the configured reference range.";
+
+      for (const id of ["temperatureAlert", "humidityAlert"]) {
+        $(id).style.background = "#4b151b";
+        $(id).style.color = "#fecaca";
+      }
+
+      card.hidden = !showTemperature && !showHumidity;
+    }
+
+    $("toggleDhtStatus").addEventListener("click", () => {
+      const details = $("dhtConnectionDetails");
+      const opening = details.hidden;
+      details.hidden = !opening;
+
+      $("toggleDhtStatus").textContent = opening
+        ? "Hide DHT11 connection status"
+        : "Show DHT11 connection status";
+
+      $("toggleDhtStatus").setAttribute("aria-expanded", String(opening));
+      if (opening) updateDhtStatusDisplay();
+    });
+
+    function stopDatabaseListeners() {
+      if (!database || !databaseListenersStarted) return;
+
+      [
+        ".info/connected",
+        "patient/heartRate",
+        "patient/spo2",
+        "patient/temperature",
+        "patient/humidity",
+        "patient/dhtValid",
+        "patient/alerts/temperatureOutsideReference",
+        "patient/alerts/humidityOutsideReference",
+        "patient/sos/active",
+        "patient/sos/timestamp",
+        "medicineReminders"
+      ].forEach((path) => database.ref(path).off());
+
+      databaseListenersStarted = false;
+    }
+
+    function startDatabaseListeners() {
+      if (!database || databaseListenersStarted || !signedInUser) return;
+
+      databaseListenersStarted = true;
+      initialiseHistoryCharts();
+      showConnection("Signed in; connecting to Firebase...");
+
+      database.ref(".info/connected").on("value", (snapshot) => {
+        if (snapshot.val() === true) {
+          showConnection("Connected to Firebase; waiting for live values...");
+        } else {
+          showConnection("Disconnected from Firebase. Live readings are unavailable.", true);
+          $("heartRate").textContent = "--";
+          $("spo2").textContent = "--";
+          updateDhtStatusDisplay();
+          setSosUnavailable();
+        }
+      }, (error) => showConnection("Connection status error: " + error.message, true));
+
+      database.ref("patient/heartRate").on("value", (snapshot) => {
+        const value = snapshot.val();
+        const numericValue = Number(value);
+
+        $("heartRate").textContent = value == null ? "--" : value;
+        addHistoryPoint(heartRateHistory, heartRateChart, value);
+
+        if (
+          value == null ||
+          value === "" ||
+          !Number.isFinite(numericValue) ||
+          numericValue <= 0
+        ) {
+          previousHeartRateAlert = null;
+          return;
+        }
+
+        const alertNow =
+          numericValue < HR_LOW_LIMIT ||
+          numericValue > HR_HIGH_LIMIT;
+
+        if (alertNow && previousHeartRateAlert !== true) {
+          const reason = numericValue < HR_LOW_LIMIT
+            ? `Heart rate LOW: ${numericValue} BPM. Limit: below ${HR_LOW_LIMIT}.`
+            : `Heart rate HIGH: ${numericValue} BPM. Limit: above ${HR_HIGH_LIMIT}.`;
+
+          showPatientCareNotification(
+            "PatientCare Heart-Rate Alert",
+            reason,
+            "patientcare-heart-rate"
+          );
+        }
+
+        previousHeartRateAlert = alertNow;
+      }, (error) => showConnection("Heart-rate read error: " + error.message, true));
+
+      database.ref("patient/spo2").on("value", (snapshot) => {
+        const value = snapshot.val();
+        const numericValue = Number(value);
+
+        $("spo2").textContent = value == null ? "--" : value;
+        addHistoryPoint(spo2History, spo2Chart, value);
+
+        if (
+          value == null ||
+          value === "" ||
+          !Number.isFinite(numericValue) ||
+          numericValue <= 0 ||
+          numericValue > 100
+        ) {
+          previousSpo2Alert = null;
+          return;
+        }
+
+        const alertNow = numericValue < SPO2_LOW_LIMIT;
+
+        if (alertNow && previousSpo2Alert !== true) {
+          showPatientCareNotification(
+            "PatientCare SpO₂ Alert",
+            `SpO₂ is LOW: ${numericValue}%. Configured limit: below ${SPO2_LOW_LIMIT}%.`,
+            "patientcare-spo2"
+          );
+        }
+
+        previousSpo2Alert = alertNow;
+      }, (error) => showConnection("SpO₂ read error: " + error.message, true));
+
+      database.ref("patient/temperature").on("value", (snapshot) => {
+        const value = snapshot.val();
+        const numericValue = Number(value);
+
+        $("temperature").textContent =
+          value == null || value === "" || !Number.isFinite(numericValue)
+            ? "--"
+            : numericValue.toFixed(1);
+      }, (error) => showConnection("Temperature read error: " + error.message, true));
+
+      database.ref("patient/humidity").on("value", (snapshot) => {
+        const value = snapshot.val();
+        const numericValue = Number(value);
+
+        $("humidity").textContent =
+          value == null || value === "" || !Number.isFinite(numericValue)
+            ? "--"
+            : numericValue.toFixed(1);
+      }, (error) => showConnection("Humidity read error: " + error.message, true));
+
+      database.ref("patient/dhtValid").on("value", (snapshot) => {
+        const value = snapshot.val();
+        dhtSensorConnected = value === true;
+
+        if (value !== true && value !== false) dhtSensorConnected = null;
+        updateDhtStatusDisplay();
+        updateEnvironmentAlerts();
+      }, (error) => {
+        dhtSensorConnected = null;
+        updateDhtStatusDisplay();
+        updateEnvironmentAlerts();
+        showConnection("DHT11 status read error: " + error.message, true);
+      });
+
+      database.ref("patient/alerts/temperatureOutsideReference").on("value", (snapshot) => {
+        temperatureAlertActive = snapshot.val() === true;
+        updateEnvironmentAlerts();
+      }, (error) => showConnection("Temperature alert read error: " + error.message, true));
+
+      database.ref("patient/alerts/humidityOutsideReference").on("value", (snapshot) => {
+        humidityAlertActive = snapshot.val() === true;
+        updateEnvironmentAlerts();
+      }, (error) => showConnection("Humidity alert read error: " + error.message, true));
+
+      database.ref("patient/sos/active").on("value", (snapshot) => {
+        const active = snapshot.val() === true;
+
+        if (active && previousSosActive !== true) {
+          showPatientCareNotification(
+            "PatientCare SOS Alert",
+            "The physical SOS button is active. Check the patient and respond immediately.",
+            "patientcare-sos"
+          );
+        }
+
+        previousSosActive = active;
+
+        database.ref("patient/sos/timestamp").once("value")
+          .then((timeSnapshot) => setSosStatus(active, timeSnapshot.val()))
+          .catch(() => setSosStatus(active, null));
+      }, (error) => {
+        setSosUnavailable();
+        console.error("PatientCare SOS listener error:", error);
+      });
+
+      const remindersRef = database.ref("medicineReminders");
+
+      remindersRef.on("value", (snapshot) => {
+        const list = $("reminderList");
+        list.replaceChildren();
+
+        const reminders = snapshot.val();
+
+        if (!reminders) {
+          const empty = document.createElement("p");
+          empty.className = "hint";
+          empty.textContent = "No reminders added yet.";
+          list.appendChild(empty);
+          return;
+        }
+
+        Object.entries(reminders).forEach(([key, item]) => {
+          const row = document.createElement("div");
+          row.className = "reminder-item";
+
+          const text = document.createElement("span");
+          text.textContent = `${item.name || "Medicine"} — ${item.time || "No time"}`;
+
+          const remove = document.createElement("button");
+          remove.type = "button";
+          remove.className = "small-button danger-button";
+          remove.textContent = "Delete";
+
+          remove.addEventListener("click", () => {
+            remindersRef.child(key).remove().catch((error) => {
+              alert("Could not delete reminder: " + error.message);
+            });
+          });
+
+          row.append(text, remove);
+          list.appendChild(row);
+        });
+      }, (error) => {
+        const message = document.createElement("p");
+        message.className = "hint";
+        message.textContent =
+          "Could not load reminders: " + error.message + ". Check Firebase Database Rules.";
+        $("reminderList").replaceChildren(message);
+      });
+    }
+        async function configureMessaging() {
+      const status = $("notificationStatus");
+      const button = $("enableNotifications");
+      button.disabled = true;
+
+      try {
+        if (!("Notification" in window) || !("serviceWorker" in navigator)) {
+          throw new Error("This browser does not support notifications or service workers.");
+        }
+
+        if (!window.isSecureContext) {
+          throw new Error("Open the HTTPS GitHub Pages website.");
+        }
+
+        if (!(await firebase.messaging.isSupported())) {
+          throw new Error("Firebase Messaging is not supported in this browser.");
+        }
+
+        status.textContent = "Requesting notification permission...";
+        const permission = await Notification.requestPermission();
+
+        if (permission !== "granted") {
+          status.textContent = "Notification permission was not granted.";
+          return;
+        }
+
+        const registration = await navigator.serviceWorker.register(
+          "./firebase-messaging-sw.js",
+          { updateViaCache: "none" }
+        );
+
+        await registration.update();
+
+        if (registration.installing) {
+          await new Promise((resolve, reject) => {
+            const worker = registration.installing;
+
+            worker.addEventListener("statechange", () => {
+              if (worker.state === "activated") resolve();
+
+              if (worker.state === "redundant") {
+                reject(new Error("Service worker became redundant. Check its file for errors."));
+              }
+            });
+          });
+        }
+
+        const activeRegistration = await navigator.serviceWorker.ready;
+
+        if (!activeRegistration.active) {
+          throw new Error("Service worker is not active yet. Reload and try again.");
+        }
+
+        messaging = firebase.messaging();
+
+        messaging.onMessage((payload) => {
+          const title = payload.notification?.title || "PatientCare Alert";
+          const body = payload.notification?.body || "Please check your PatientCare dashboard.";
+
+          status.textContent = "Notification received: " + title;
+
+          if (Notification.permission === "granted") {
+            new Notification(title, { body });
+          }
+        });
+
+        const token = await messaging.getToken({
+          vapidKey: VAPID_KEY,
+          serviceWorkerRegistration: activeRegistration
+        });
+
+        if (!token) {
+          throw new Error("Firebase did not return a registration token.");
+        }
+
+        status.textContent =
+          "Browser registered successfully. Local SOS and sensor alerts can display while this dashboard is open.";
+      } catch (error) {
+        status.textContent =
+          "Notification setup failed: " + (error.message || String(error));
+        console.error("PatientCare notification setup:", error);
+      } finally {
+        button.disabled = false;
+      }
+    }
+
+    // Login handler is attached before Firebase initialization.
+    $("loginForm").addEventListener("submit", async (event) => {
+      event.preventDefault();
+
+      const email = $("loginEmail").value.trim();
+      const password = $("loginPassword").value;
+      const button = $("loginButton");
+
+      button.disabled = true;
+      button.textContent = "Signing in...";
+      setLoginMessage("");
+
+      try {
+        if (!window.firebase || typeof firebase.auth !== "function") {
+          throw new Error("Firebase did not load. Check your internet connection, reload the page, and check Chrome Console.");
+        }
+
+        if (!auth) {
+          if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
+          auth = firebase.auth();
+          database = firebase.database();
+        }
+
+        await auth.signInWithEmailAndPassword(email, password);
+      } catch (error) {
+        console.error("PatientCare sign-in error:", error);
+        let message = "Sign-in failed. Please try again.";
+
+        if (["auth/invalid-credential", "auth/wrong-password", "auth/user-not-found"].includes(error.code)) {
+          message = "Email or password is incorrect. Check your Firebase Authentication account.";
+        } else if (error.code === "auth/invalid-email") {
+          message = "Enter a valid email address.";
+        } else if (error.code === "auth/too-many-requests") {
+          message = "Too many attempts. Wait a while, then try again.";
+        } else if (error.code === "auth/unauthorized-domain") {
+          message = "This website domain is not authorized. In Firebase Console, open Authentication → Settings → Authorized domains and add your GitHub Pages hostname.";
+        } else if (error.code === "auth/operation-not-allowed") {
+          message = "Email/Password sign-in is disabled. Enable it in Firebase Console → Authentication → Sign-in method.";
+        } else if (error.code === "auth/network-request-failed") {
+          message = "Network request failed. Check your internet connection, then reload.";
+        } else if (error.code === "auth/api-key-not-valid" || error.code === "auth/invalid-api-key") {
+          message = "Firebase API key is invalid. Check the web app configuration.";
+        } else if (error.code === "auth/app-not-authorized") {
+          message = "This web app is not authorized for the Firebase project. Check the Firebase web app configuration.";
+        } else if (error.code) {
+          message = "Firebase sign-in error (" + error.code + "): " + (error.message || "Check Firebase Authentication settings.");
+        } else if (error.message) {
+          message = error.message;
+        }
+
+        setLoginMessage(message, true);
+      } finally {
+        button.disabled = false;
+        button.textContent = "Sign In";
+      }
+    });
+
+    try {
+      if (!window.firebase || typeof firebase.initializeApp !== "function") {
+        throw new Error("Firebase scripts did not load. Check internet connection and reload the page.");
+      }
+
+      if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
+
+      auth = firebase.auth();
+      database = firebase.database();
+
+      $("enableNotifications").addEventListener("click", configureMessaging);
+
+      $("signOutButton").addEventListener("click", async () => {
+        try {
+          stopDatabaseListeners();
+          await auth.signOut();
+        } catch (error) {
+          alert("Could not sign out: " + error.message);
+        }
+      });
+
+      auth.onAuthStateChanged((user) => {
+        signedInUser = user;
+
+        if (user) {
+          $("loginSection").hidden = true;
+          $("dashboardApp").hidden = false;
+          $("signedInLabel").textContent = "Signed in as " + (user.email || "Firebase user");
+          setLoginMessage("");
+          startDatabaseListeners();
+        } else {
+          stopDatabaseListeners();
+
+          $("dashboardApp").hidden = true;
+          $("loginSection").hidden = false;
+          $("signedInLabel").textContent = "Signed out";
+
+          showConnection("Sign in to connect to Firebase.");
+          $("heartRate").textContent = "--";
+          $("spo2").textContent = "--";
+          $("temperature").textContent = "--";
+          $("humidity").textContent = "--";
+
+          dhtSensorConnected = null;
+          previousSosActive = null;
+          previousHeartRateAlert = null;
+          previousSpo2Alert = null;
+          temperatureAlertActive = false;
+          humidityAlertActive = false;
+
+          updateDhtStatusDisplay();
+          updateEnvironmentAlerts();
+
+          $("dhtConnectionDetails").hidden = true;
+          $("toggleDhtStatus").textContent = "Show DHT11 connection status";
+          $("toggleDhtStatus").setAttribute("aria-expanded", "false");
+
+          heartRateHistory.length = 0;
+          spo2History.length = 0;
+
+          if (heartRateChart) {
+            heartRateChart.data.labels = [];
+            heartRateChart.data.datasets.forEach((dataset) => dataset.data = []);
+            heartRateChart.update("none");
+          }
+
+          if (spo2Chart) {
+            spo2Chart.data.labels = [];
+            spo2Chart.data.datasets.forEach((dataset) => dataset.data = []);
+            spo2Chart.update("none");
+          }
+
+          setSosUnavailable();
+        }
+      });
+    } catch (error) {
+      setLoginMessage("Firebase could not start: " + error.message, true);
+      showConnection("Firebase could not start: " + error.message, true);
+    }
+
+    // CAMERA FUNCTIONS: kept separate from login and notification code.
+    function cameraCandidates(inputUrl) {
+      const first = new URL(inputUrl);
+      const candidates = [first.href];
+
+      if (first.pathname === "/" || first.pathname === "") {
+        first.pathname = "/stream";
+      }
+
+      const host = first.hostname;
+      const protocol = first.protocol;
+      const port = first.port;
+
+      if (port === "81") {
+        candidates.push(`${protocol}//${host}/stream`);
+      } else {
+        candidates.push(`${protocol}//${host}:81/stream`);
+      }
+
+      if (port !== "80" && port !== "") {
+        candidates.push(`${protocol}//${host}/stream`);
+      }
+
+      return [...new Set(candidates)];
+    }
+
+    function showCameraError(frame, statusText) {
+      const message = document.createElement("div");
+      message.className = "camera-placeholder";
+      message.textContent = statusText;
+      frame.replaceChildren(message);
+      $("cameraStatus").textContent = statusText;
+    }
+
+    $("toggleCamera").addEventListener("click", () => {
+      const frame = $("cameraFrame");
+      const button = $("toggleCamera");
+      const status = $("cameraStatus");
+
+      if (cameraVisible) {
+        frame.hidden = true;
+        frame.replaceChildren();
+        cameraVisible = false;
+        button.textContent = "Show Camera";
+        status.textContent = "Camera is hidden.";
+        return;
+      }
+
+      let candidates;
+
+      try {
+        const url = normaliseCameraUrl($("cameraUrl").value);
+        const parsedUrl = new URL(url);
+
+        if (!["http:", "https:"].includes(parsedUrl.protocol)) {
+          throw new Error("Use an HTTP or HTTPS stream URL.");
+        }
+
+        candidates = cameraCandidates(parsedUrl.href);
+      } catch (error) {
+        alert(error.message || "Please enter a valid camera URL.");
+        return;
+      }
+
+      frame.replaceChildren();
+      frame.hidden = false;
+      cameraVisible = true;
+      button.textContent = "Hide Camera";
+      status.textContent = "Connecting to ESP32-CAM...";
+
+      let attempt = 0;
+      let completed = false;
+      let timeoutId = null;
+
+      const image = document.createElement("img");
+      image.alt = "ESP32-CAM live stream";
+      frame.appendChild(image);
+
+      const tryNext = () => {
+        if (completed) return;
+
+        if (timeoutId !== null) clearTimeout(timeoutId);
+
+        if (attempt >= candidates.length) {
+          completed = true;
+          showCameraError(
+            frame,
+            "Could not load the stream from the available endpoints. If the direct URL works, HTTPS GitHub Pages may be blocking the HTTP stream. A secure HTTPS relay or local HTTP-hosted dashboard may be required."
+          );
+          return;
+        }
+
+        const candidate = candidates[attempt++];
+        status.textContent =
+          `Trying camera endpoint ${attempt} of ${candidates.length}...`;
+
+        image.src = candidate;
+
+        timeoutId = setTimeout(() => {
+          if (!completed) tryNext();
+        }, 7000);
+      };
+
+      image.onload = () => {
+        completed = true;
+
+        if (timeoutId !== null) clearTimeout(timeoutId);
+        status.textContent = "Camera stream connected.";
+      };
+
+      image.onerror = () => {
+        if (timeoutId !== null) clearTimeout(timeoutId);
+        tryNext();
+      };
+
+      tryNext();
+    });
+
+    function normaliseCameraUrl(rawValue) {
+      let value = rawValue.trim();
+
+      if (!value) {
+        throw new Error("Enter the ESP32-CAM IP address or stream URL first.");
+      }
+
+      if (!/^https?:\/\//i.test(value)) {
+        value = "http://" + value;
+      }
+
+      let parsed;
+
+      try {
+        parsed = new URL(value);
+      } catch {
+        throw new Error("Enter a valid camera IP address or URL.");
+      }
+
+      if (!["http:", "https:"].includes(parsed.protocol)) {
+        throw new Error("Use an HTTP or HTTPS camera URL.");
+      }
+
+      if (parsed.username || parsed.password) {
+        throw new Error("Do not put login credentials in the camera URL.");
+      }
+
+      if (parsed.pathname === "/" || parsed.pathname === "") {
+        if (!parsed.port) parsed.port = "81";
+        parsed.pathname = "/stream";
+      }
+
+      return parsed.href;
+    }
+
+    $("openCameraStream").addEventListener("click", () => {
+      try {
+        const url = normaliseCameraUrl($("cameraUrl").value);
+        const opened = window.open(url, "_blank", "noopener,noreferrer");
+
+        $("cameraStatus").textContent = opened === null
+          ? "The browser may have blocked the new tab. Allow pop-ups and try again."
+          : "Requested the camera stream in a separate browser tab.";
+      } catch (error) {
+        $("cameraStatus").textContent = error.message;
+      }
+    });
+
+    $("addReminder").addEventListener("click", async () => {
+      const name = $("medicineName").value.trim();
+      const time = $("medicineTime").value;
+
+      if (!name || !time) {
+        alert("Enter both a reminder name and time.");
+        return;
+      }
+
+      if (!database || !auth || !auth.currentUser) {
+        alert("Please sign in before adding a reminder.");
+        return;
+      }
+
+      try {
+        await database.ref("medicineReminders").push({
+          name,
+          time,
+          createdAt: Date.now()
+        });
+
+        $("medicineName").value = "";
+        $("medicineTime").value = "";
+      } catch (error) {
+        alert("Could not save reminder: " + error.message + ". Check Firebase Database Rules.");
+      }
+    });
+  </script>
+</body>
+</html>
