@@ -1,112 +1,103 @@
 ```html
-          30, 180, 60, 100, " BPM"
-        );
-      }
+    const HR_LOW_LIMIT = 50;
+    const HR_HIGH_LIMIT = 120;
+    const SPO2_LOW_LIMIT = 90;
 
-      if (!spo2Chart) {
-        spo2Chart = createHistoryChart(
-          "spo2Chart", "SpO₂", "#c084fc",
-          70, 100, 95, 100, "%"
-        );
-      }
+    const $ = (id) => document.getElementById(id);
+
+    let database = null;
+    let auth = null;
+    let messaging = null;
+    let signedInUser = null;
+    let databaseListenersStarted = false;
+    let cameraVisible = false;
+    let dhtSensorConnected = null;
+    let previousSosActive = null;
+    let previousGsmSosActive = null;
+    let previousHeartRateAlert = null;
+    let previousSpo2Alert = null;
+    let temperatureAlertActive = false;
+    let humidityAlertActive = false;
+    let heartRateChart = null;
+    let spo2Chart = null;
+
+    const MAX_GRAPH_POINTS = 100;
+    const heartRateHistory = [];
+    const spo2History = [];
+
+    function createHistoryChart(canvasId, title, lineColor, minValue, maxValue, lowerRef, upperRef, unit) {
+      const canvas = $(canvasId);
+      if (!canvas || !window.Chart) return null;
+
+      return new Chart(canvas, {
+        type: "line",
+        data: {
+          labels: [],
+          datasets: [
+            {
+              label: title,
+              data: [],
+              borderColor: lineColor,
+              backgroundColor: lineColor,
+              borderWidth: 2,
+              pointRadius: 2,
+              tension: 0.2,
+              spanGaps: false
+            },
+            {
+              label: "Reference lower (" + lowerRef + unit + ")",
+              data: [],
+              borderColor: "#fbbf24",
+              borderDash: [6, 5],
+              borderWidth: 1.5,
+              pointRadius: 0
+            },
+            {
+              label: "Reference upper (" + upperRef + unit + ")",
+              data: [],
+              borderColor: "#34d399",
+              borderDash: [6, 5],
+              borderWidth: 1.5,
+              pointRadius: 0
+            }
+          ]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          animation: false,
+          interaction: { intersect: false, mode: "index" },
+          plugins: {
+            legend: { labels: { color: "#eef4ff" } }
+          },
+          scales: {
+            x: {
+              ticks: { color: "#a8b5cc", maxTicksLimit: 6 },
+              grid: { color: "rgba(168,181,204,0.12)" }
+            },
+            y: {
+              min: minValue,
+              max: maxValue,
+              ticks: { color: "#a8b5cc" },
+              grid: { color: "rgba(168,181,204,0.12)" },
+              title: { display: true, text: unit.trim(), color: "#a8b5cc" }
+            }
+          }
+        }
+      });
     }
 
-    function addHistoryPoint(history, chart, rawValue) {
-      const value = Number(rawValue);
-      if (!Number.isFinite(value) || rawValue === null || rawValue === "") return;
-
-      history.push({ time: new Date(), value });
-      if (history.length > MAX_GRAPH_POINTS) history.shift();
-      if (!chart) return;
-
-      chart.data.labels = history.map((item) => item.time.toLocaleTimeString());
-      chart.data.datasets[0].data = history.map((item) => item.value);
-      chart.data.datasets[1].data = history.map(() => chart === heartRateChart ? 60 : 95);
-      chart.data.datasets[2].data = history.map(() => 100);
-      chart.update("none");
-    }
-
-    function showConnection(message, isError = false) {
-      setStatus("connectionStatus", message, isError ? "status-danger" : "status-line");
-    }
-
-    function setText(id, value) {
-      const element = $(id);
-      if (element) element.textContent = value;
-    }
-
-    function setStatus(id, text, className) {
-      const element = $(id);
-      if (!element) return;
-      element.textContent = text;
-      element.className = className || "status-line";
-    }
-
-    function formatTimestamp(value) {
-      if (!value) return "Not available";
-
-      let date;
-      if (typeof value === "number") date = new Date(value);
-      else if (typeof value === "string") date = new Date(value);
-      else if (typeof value === "object" && value.seconds) {
-        date = new Date(value.seconds * 1000);
-      }
-
-      if (!date || Number.isNaN(date.getTime())) return "Not available";
-      return date.toLocaleString();
-    }
-
-    function showBrowserNotification(title, body) {
-      if (!("Notification" in window)) return;
-      if (Notification.permission !== "granted") return;
-
-      try {
-        new Notification(title, { body });
-      } catch (error) {
-        console.warn("Browser notification could not be shown:", error);
-      }
-    }
-
-    function setGsmSosUnavailable() {
-      setStatus("gsmSosActiveStatus", "GSM SOS status unavailable", "status-line");
-      setText("gsmSmsStatus", "Not available");
-      setText("gsmCallStatus", "Not available");
-      setText("gsmSosTimestamp", "No GSM SOS event received yet.");
-    }
-
-    function updateGsmSos(data) {
-      if (!data || typeof data !== "object") {
-        setGsmSosUnavailable();
-        previousGsmSosActive = false;
+    function initialiseHistoryCharts() {
+      if (!window.Chart) {
+        showConnection("Chart library did not load. Check the internet connection and reload.", true);
         return;
       }
 
-      const active = data.active === true;
-
-      setStatus(
-        "gsmSosActiveStatus",
-        active ? "GSM SOS ACTIVE" : "GSM SOS INACTIVE",
-        active ? "status-line status-danger" : "status-line status-safe"
-      );
-
-      setText("gsmSmsStatus", data.smsStatus || "Not available");
-      setText("gsmCallStatus", data.callStatus || "Not available");
-      setText(
-        "gsmSosTimestamp",
-        "Last event: " + formatTimestamp(data.timestamp)
-      );
-
-      if (active && previousGsmSosActive !== true) {
-        showBrowserNotification(
-          "PatientCare GSM SOS",
-          "The second physical GSM SOS button has been activated."
+      if (!heartRateChart) {
+        heartRateChart = createHistoryChart(
+          "heartRateChart", "Heart rate", "#60a5fa",
+          30, 180, 60, 100, " BPM"
         );
-      }
-
-      previousGsmSosActive = active;
-    }
-              30, 180, 60, 100, " BPM"
-                  );
       }
 
       if (!spo2Chart) {
@@ -149,45 +140,6 @@
     function showConnection(message, isError = false) {
       $("connectionStatus").textContent = message;
       $("connectionStatus").style.color = isError ? "#fca5a5" : "#a8b5cc";
-    }
-
-    function formatEventTime(value) {
-      if (value === null || value === undefined || value === "") return "Time not supplied by ESP32.";
-      const numeric = Number(value);
-      const date = Number.isFinite(numeric) ? new Date(numeric) : new Date(value);
-      return Number.isNaN(date.getTime()) ? String(value) : date.toLocaleString();
-    }
-
-    function displayGsmSos(active, timestamp, smsStatus, callStatus) {
-      const activeElement = $("gsmSosActiveStatus");
-      const smsElement = $("gsmSmsStatus");
-      const callElement = $("gsmCallStatus");
-      const timeElement = $("gsmSosTimestamp");
-
-      if (active === true) {
-        activeElement.textContent = "GSM SOS ACTIVE — SIM900A alert requested.";
-        activeElement.style.background = "#4b151b";
-        activeElement.style.color = "#fecaca";
-      } else if (active === false) {
-        activeElement.textContent = "GSM SOS is not active.";
-        activeElement.style.background = "#123b2b";
-        activeElement.style.color = "#bbf7d0";
-      } else {
-        activeElement.textContent = "Waiting for GSM SOS status from the ESP32.";
-        activeElement.style.background = "#334155";
-        activeElement.style.color = "#eef4ff";
-      }
-
-      smsElement.textContent = smsStatus == null || smsStatus === "" ? "Not reported" : String(smsStatus);
-      callElement.textContent = callStatus == null || callStatus === "" ? "Not reported" : String(callStatus);
-      timeElement.textContent = timestamp == null || timestamp === ""
-        ? "No GSM SOS timestamp received."
-        : "Last GSM SOS event: " + formatEventTime(timestamp);
-    }
-
-    function setGsmSosUnavailable() {
-      displayGsmSos(null, null, null, null);
-      previousGsmSosActive = null;
     }
 
     function setSosUnavailable() {
@@ -320,9 +272,7 @@
 
       $("toggleDhtStatus").setAttribute("aria-expanded", String(opening));
       if (opening) updateDhtStatusDisplay();
-    });
-
-    function stopDatabaseListeners() {
+    });    function stopDatabaseListeners() {
       if (!database || !databaseListenersStarted) return;
 
       [
@@ -359,7 +309,7 @@
           $("spo2").textContent = "--";
           updateDhtStatusDisplay();
           setSosUnavailable();
-          setGsmSosUnavailable();
+          $("gsmSosActiveStatus").textContent = "Firebase disconnected; GSM SOS status unavailable.";
         }
       }, (error) => showConnection("Connection status error: " + error.message, true));
 
@@ -495,40 +445,51 @@
         console.error("PatientCare SOS listener error:", error);
       });
 
-      const gsmSosRef = database.ref("patient/gsmSos");
-      let latestGsmSos = {
-        active: null,
-        timestamp: null,
-        smsStatus: null,
-        callStatus: null
-      };
+      database.ref("patient/gsmSos").on("value", (snapshot) => {
+        const data = snapshot.val();
 
-      gsmSosRef.on("value", (snapshot) => {
-        const value = snapshot.val() || {};
-        latestGsmSos = {
-          active: typeof value.active === "boolean" ? value.active : null,
-          timestamp: value.timestamp ?? null,
-          smsStatus: value.smsStatus ?? null,
-          callStatus: value.callStatus ?? null
-        };
+        if (!data || typeof data !== "object") {
+          $("gsmSosActiveStatus").textContent = "Waiting for GSM SOS status from the ESP32.";
+          $("gsmSmsStatus").textContent = "Not reported";
+          $("gsmCallStatus").textContent = "Not reported";
+          $("gsmSosTimestamp").textContent = "No GSM SOS timestamp received yet.";
+          previousGsmSosActive = null;
+          return;
+        }
 
-        if (latestGsmSos.active === true && previousGsmSosActive !== true) {
+        const active = data.active === true;
+        const statusElement = $("gsmSosActiveStatus");
+        statusElement.textContent = active
+          ? "GSM SOS ACTIVE — SIM900A alert requested."
+          : "GSM SOS is not active.";
+        statusElement.style.background = active ? "#4b151b" : "#123b2b";
+        statusElement.style.color = active ? "#fecaca" : "#bbf7d0";
+
+        $("gsmSmsStatus").textContent = data.smsStatus == null ? "Not reported" : String(data.smsStatus);
+        $("gsmCallStatus").textContent = data.callStatus == null ? "Not reported" : String(data.callStatus);
+
+        if (data.timestamp == null || data.timestamp === "") {
+          $("gsmSosTimestamp").textContent = "No GSM SOS timestamp received yet.";
+        } else {
+          const numericTimestamp = Number(data.timestamp);
+          const eventDate = Number.isFinite(numericTimestamp)
+            ? new Date(numericTimestamp)
+            : new Date(data.timestamp);
+          $("gsmSosTimestamp").textContent = "Last GSM SOS event: " +
+            (Number.isNaN(eventDate.getTime()) ? String(data.timestamp) : eventDate.toLocaleString());
+        }
+
+        if (active && previousGsmSosActive !== true) {
           showPatientCareNotification(
             "PatientCare GSM SOS Alert",
-            "The second physical SOS button was activated. Check the GSM SMS and call status on the dashboard.",
+            "The second physical GSM SOS button was activated. Check the SMS and call status.",
             "patientcare-gsm-sos"
           );
         }
 
-        previousGsmSosActive = latestGsmSos.active;
-        displayGsmSos(
-          latestGsmSos.active,
-          latestGsmSos.timestamp,
-          latestGsmSos.smsStatus,
-          latestGsmSos.callStatus
-        );
+        previousGsmSosActive = active;
       }, (error) => {
-        displayGsmSos(null, null, "Read error: " + error.message, "Read error");
+        $("gsmSosActiveStatus").textContent = "Could not read GSM SOS status: " + error.message;
         console.error("PatientCare GSM SOS listener error:", error);
       });
 
@@ -559,24 +520,6 @@
           remove.type = "button";
           remove.className = "small-button danger-button";
           remove.textContent = "Delete";
-          remove.addEventListener("click", () => {
-            if (confirm("Delete this reminder?")) {
-              remindersRef.child(key).remove()
-                .catch((error) => alert("Could not delete reminder: " + error.message));
-            }
-          });
-
-          row.append(text, remove);
-          list.appendChild(row);
-        });
-      }, (error) => {
-        showConnection("Medicine reminder read error: " + error.message, true);
-      });
-    }
-                    const remove = document.createElement("button");
-          remove.type = "button";
-          remove.className = "small-button danger-button";
-          remove.textContent = "Delete";
 
           remove.addEventListener("click", () => {
             remindersRef.child(key).remove().catch((error) => {
@@ -595,7 +538,8 @@
         $("reminderList").replaceChildren(message);
       });
     }
-        async function configureMessaging() {
+
+    async function configureMessaging() {
       const status = $("notificationStatus");
       const button = $("enableNotifications");
       button.disabled = true;
@@ -679,9 +623,7 @@
       } finally {
         button.disabled = false;
       }
-    }
-
-    // Login handler is attached before Firebase initialization.
+    }    // Login handler is attached before Firebase initialization.
     $("loginForm").addEventListener("submit", async (event) => {
       event.preventDefault();
 
@@ -811,7 +753,11 @@
           }
 
           setSosUnavailable();
-          setGsmSosUnavailable();
+          $("gsmSosActiveStatus").textContent = "Sign in to view GSM SOS status.";
+          $("gsmSmsStatus").textContent = "Not reported";
+          $("gsmCallStatus").textContent = "Not reported";
+          $("gsmSosTimestamp").textContent = "No GSM SOS timestamp received yet.";
+          previousGsmSosActive = null;
         }
       });
     } catch (error) {
