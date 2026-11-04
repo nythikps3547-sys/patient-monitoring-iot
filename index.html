@@ -272,7 +272,8 @@
 
       $("toggleDhtStatus").setAttribute("aria-expanded", String(opening));
       if (opening) updateDhtStatusDisplay();
-    });    function stopDatabaseListeners() {
+    });
+        function stopDatabaseListeners() {
       if (!database || !databaseListenersStarted) return;
 
       [
@@ -623,7 +624,8 @@
       } finally {
         button.disabled = false;
       }
-    }    // Login handler is attached before Firebase initialization.
+    }
+                // Login handler is attached before Firebase initialization.
     $("loginForm").addEventListener("submit", async (event) => {
       event.preventDefault();
 
