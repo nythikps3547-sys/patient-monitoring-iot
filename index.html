@@ -16,25 +16,37 @@
   --blue:#60a5fa;
 }
 * { box-sizing:border-box; }
+
 body {
   margin:0;
   font-family:Arial,Helvetica,sans-serif;
   background:var(--bg);
   color:var(--text);
 }
+
 header,footer {
   max-width:1100px;
   margin:auto;
   padding:22px 18px 12px;
 }
+
 h1 { margin:0 0 6px; font-size:clamp(25px,4vw,34px); }
 h2 { margin-top:0; }
 main { max-width:1100px; margin:auto; padding:0 18px 32px; }
-.subtitle,.hint,.metric-label,.unit,.chart-note { color:var(--muted); }
+
+.subtitle,.hint,.metric-label,.unit,.chart-note {
+  color:var(--muted);
+}
+
 .hint { font-size:13px; line-height:1.5; }
 .metric-label { font-size:14px; }
-.metric { font-size:clamp(30px,5vw,42px); font-weight:800; margin:10px 0; }
+.metric {
+  font-size:clamp(30px,5vw,42px);
+  font-weight:800;
+  margin:10px 0;
+}
 .unit { font-size:15px; }
+
 button {
   cursor:pointer;
   border:0;
@@ -44,19 +56,33 @@ button {
   background:var(--blue);
   color:#081326;
 }
+
 button:disabled { opacity:.6; cursor:wait; }
-.secondary-button,.small-button { background:#334155; color:white; }
+.secondary-button,.small-button {
+  background:#334155;
+  color:white;
+}
 .danger-button { background:#b91c1c; color:white; }
-.tabs { display:flex; flex-wrap:wrap; gap:9px; margin-bottom:18px; }
+
+.tabs {
+  display:flex;
+  flex-wrap:wrap;
+  gap:9px;
+  margin-bottom:18px;
+}
+
 .tab-button { background:var(--panel2); color:var(--text); }
 .tab-button.active { background:var(--blue); color:#081326; }
+
 .tab-panel { display:none; }
 .tab-panel.active { display:block; }
+
 .grid {
   display:grid;
   grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
   gap:14px;
 }
+
 .card {
   background:var(--panel);
   border:1px solid #283650;
@@ -64,6 +90,7 @@ button:disabled { opacity:.6; cursor:wait; }
   padding:19px;
   margin-bottom:14px;
 }
+
 .status-line {
   padding:12px;
   border-radius:9px;
@@ -71,9 +98,11 @@ button:disabled { opacity:.6; cursor:wait; }
   margin:10px 0;
   background:#334155;
 }
+
 .status-good { background:#123b2b; color:#bbf7d0; }
 .status-bad { background:#4b151b; color:#fecaca; }
 .status-wait { background:#334155; color:#eef4ff; }
+
 input {
   width:100%;
   min-width:0;
@@ -84,12 +113,26 @@ input {
   color:var(--text);
   margin:6px 0 12px;
 }
-label { display:block; font-weight:700; margin-top:10px; }
-.inline { display:flex; gap:9px; align-items:center; flex-wrap:wrap; }
+
+label {
+  display:block;
+  font-weight:700;
+  margin-top:10px;
+}
+
+.inline {
+  display:flex;
+  gap:9px;
+  align-items:center;
+  flex-wrap:wrap;
+}
+
 .inline input { flex:1; }
+
 .auth-card { max-width:460px; margin:18px auto 28px; }
 .auth-message { min-height:20px; color:var(--muted); font-size:14px; }
 .auth-actions { display:flex; gap:10px; flex-wrap:wrap; }
+
 .account-bar {
   display:flex;
   align-items:center;
@@ -98,8 +141,16 @@ label { display:block; font-weight:700; margin-top:10px; }
   flex-wrap:wrap;
   margin:0 0 14px;
 }
-.chart-wrap { position:relative; height:280px; width:100%; margin-top:12px; }
+
+.chart-wrap {
+  position:relative;
+  height:280px;
+  width:100%;
+  margin-top:12px;
+}
+
 .chart-note { font-size:12px; line-height:1.5; }
+
 .camera-frame {
   margin-top:14px;
   border-radius:12px;
@@ -110,14 +161,24 @@ label { display:block; font-weight:700; margin-top:10px; }
   overflow:hidden;
   border:1px solid #34435d;
 }
-[hidden],.camera-frame[hidden] { display:none !important; }
+
+[hidden],.camera-frame[hidden] {
+  display:none !important;
+}
+
 .camera-frame img {
   width:100%;
   height:auto;
   max-height:600px;
   object-fit:contain;
 }
-.camera-placeholder { color:var(--muted); padding:25px; text-align:center; }
+
+.camera-placeholder {
+  color:var(--muted);
+  padding:25px;
+  text-align:center;
+}
+
 .reminder-item {
   display:flex;
   justify-content:space-between;
@@ -128,11 +189,13 @@ label { display:block; font-weight:700; margin-top:10px; }
   border-radius:9px;
   margin-top:8px;
 }
+
 .emergency-numbers {
   display:grid;
   grid-template-columns:repeat(auto-fit,minmax(190px,1fr));
   gap:12px;
 }
+
 .emergency-number {
   display:block;
   padding:15px;
@@ -142,36 +205,78 @@ label { display:block; font-weight:700; margin-top:10px; }
   text-decoration:none;
   border:1px solid #40516e;
 }
+
 .emergency-number strong {
   display:block;
   font-size:27px;
   margin-top:6px;
 }
+
 .reading-row {
   display:grid;
   grid-template-columns:repeat(3,minmax(0,1fr));
   gap:8px;
   margin-top:10px;
 }
+
 .reading-cell {
   background:var(--panel2);
   padding:12px;
   border-radius:9px;
   min-width:0;
 }
+
 .reading-cell strong {
   display:block;
   margin-top:7px;
   font-size:20px;
   overflow-wrap:anywhere;
 }
+
 .condition-item {
   padding:12px;
   border-radius:9px;
   background:var(--panel2);
   margin-top:9px;
 }
-footer { padding:0 18px 25px; color:var(--muted); font-size:12px; }
+
+/* EMERGENCY ALERT HISTORY */
+
+.emergency-alert-item {
+  background:var(--panel2);
+  border-left:4px solid #ef4444;
+  padding:13px;
+  border-radius:9px;
+  margin-top:10px;
+  overflow-wrap:anywhere;
+}
+
+.emergency-alert-item strong {
+  display:block;
+  margin-bottom:6px;
+}
+
+.emergency-alert-time {
+  display:block;
+  color:var(--muted);
+  font-size:12px;
+  margin-top:7px;
+}
+
+.emergency-alert-item.info-alert {
+  border-left-color:#60a5fa;
+}
+
+.emergency-alert-item.warning-alert {
+  border-left-color:#fbbf24;
+}
+
+footer {
+  padding:0 18px 25px;
+  color:var(--muted);
+  font-size:12px;
+}
+
 @media(max-width:500px) {
   .inline { align-items:stretch; }
   .inline button { width:100%; }
@@ -181,6 +286,7 @@ footer { padding:0 18px 25px; color:var(--muted); font-size:12px; }
 </head>
 
 <body>
+
 <header>
   <h1>PatientCare IoT</h1>
   <p class="subtitle">Patient monitoring dashboard</p>
@@ -189,96 +295,189 @@ footer { padding:0 18px 25px; color:var(--muted); font-size:12px; }
 <section id="loginSection" class="card auth-card">
   <h2>Sign in to PatientCare</h2>
   <p class="hint">Use your Firebase Authentication email and password.</p>
+
   <form id="loginForm">
     <label for="loginEmail">Email</label>
     <input id="loginEmail" type="email" autocomplete="username" required>
+
     <label for="loginPassword">Password</label>
-    <input id="loginPassword" type="password" autocomplete="current-password" required>
+    <input id="loginPassword" type="password"
+      autocomplete="current-password" required>
+
     <div class="auth-actions">
       <button id="loginButton" type="submit">Sign In</button>
     </div>
+
     <p id="loginMessage" class="auth-message" role="status"></p>
   </form>
 </section>
 
 <main id="dashboardApp" hidden>
+
   <div class="account-bar">
     <span id="signedInLabel" class="hint">Signed in</span>
-    <button id="signOutButton" class="secondary-button" type="button">Sign Out</button>
+    <button id="signOutButton" class="secondary-button" type="button">
+      Sign Out
+    </button>
   </div>
 
   <nav class="tabs" aria-label="Dashboard sections">
-    <button class="tab-button active" data-tab="dashboard" type="button">Dashboard</button>
-    <button class="tab-button" data-tab="averages" type="button">Average Readings</button>
-    <button class="tab-button" data-tab="condition" type="button">Patient Condition</button>
-    <button class="tab-button" data-tab="bodyTemperature" type="button">Body Temperature</button>
-    <button class="tab-button" data-tab="emergency" type="button">Emergency</button>
-    <button class="tab-button" data-tab="camera" type="button">Camera</button>
-    <button class="tab-button" data-tab="medicine" type="button">Medicine Reminders</button>
+
+    <button class="tab-button active"
+      data-tab="dashboard" type="button">Dashboard</button>
+
+    <button class="tab-button"
+      data-tab="averages" type="button">Average Readings</button>
+
+    <button class="tab-button"
+      data-tab="condition" type="button">Patient Condition</button>
+
+    <button id="bodyTemperatureTabButton"
+      class="tab-button"
+      data-tab="bodyTemperature"
+      type="button">Body Temperature</button>
+
+    <button class="tab-button"
+      data-tab="emergency" type="button">Emergency</button>
+
+    <button class="tab-button"
+      data-tab="camera" type="button">Camera</button>
+
+    <button class="tab-button"
+      data-tab="medicine" type="button">Medicine Reminders</button>
+
   </nav>
 
   <!-- DASHBOARD -->
+
   <section id="dashboard" class="tab-panel active">
+
     <div class="grid">
+
       <article class="card">
         <div class="metric-label">Heart Rate</div>
-        <div class="metric"><span id="heartRate">--</span> <span class="unit">BPM</span></div>
+        <div class="metric">
+          <span id="heartRate">--</span>
+          <span class="unit">BPM</span>
+        </div>
         <p class="hint">Live Firebase reading.</p>
       </article>
+
       <article class="card">
         <div class="metric-label">SpO₂</div>
-        <div class="metric"><span id="spo2">--</span> <span class="unit">%</span></div>
+        <div class="metric">
+          <span id="spo2">--</span>
+          <span class="unit">%</span>
+        </div>
         <p class="hint">Live Firebase reading.</p>
       </article>
+
       <article class="card">
         <div class="metric-label">Room Temperature</div>
-        <div class="metric"><span id="temperature">--</span> <span class="unit">°C</span></div>
+        <div class="metric">
+          <span id="temperature">--</span>
+          <span class="unit">°C</span>
+        </div>
         <p class="hint">DHT11 environmental temperature.</p>
       </article>
+
       <article class="card">
         <div class="metric-label">Humidity</div>
-        <div class="metric"><span id="humidity">--</span> <span class="unit">%</span></div>
+        <div class="metric">
+          <span id="humidity">--</span>
+          <span class="unit">%</span>
+        </div>
         <p class="hint">Live DHT11 reading.</p>
       </article>
+
       <article class="card">
         <div class="metric-label">Body Temperature</div>
-        <div class="metric"><span id="bodyTemperatureDashboard">--</span> <span class="unit">°C</span></div>
+        <div class="metric">
+          <span id="bodyTemperatureDashboard">--</span>
+          <span class="unit">°C</span>
+        </div>
         <p class="hint">Separate body-temperature sensor reading.</p>
       </article>
+
     </div>
+
+    <!-- SHOW BODY TEMPERATURE TAB -->
+
+    <article class="card">
+      <h2>Body Temperature Display</h2>
+      <p class="hint">
+        Show or hide the Body Temperature section and its tab.
+      </p>
+
+      <button id="showBodyTemperatureTab"
+        class="secondary-button"
+        type="button" hidden>
+        Show Body Temperature
+      </button>
+
+      <p id="bodyTemperatureVisibilityStatus" class="hint">
+        Body Temperature section is visible.
+      </p>
+    </article>
 
     <article class="card">
       <h2>Heart Rate History</h2>
       <p class="hint">Graph reference lines: 60–100 BPM.</p>
-      <div class="chart-wrap"><canvas id="heartRateChart"></canvas></div>
-      <p class="chart-note">Reference lines are project guidance, not a diagnosis.</p>
+      <div class="chart-wrap">
+        <canvas id="heartRateChart"></canvas>
+      </div>
+      <p class="chart-note">
+        Reference lines are project guidance, not a diagnosis.
+      </p>
     </article>
 
     <article class="card">
       <h2>SpO₂ History</h2>
       <p class="hint">Graph reference lines: 95–100%.</p>
-      <div class="chart-wrap"><canvas id="spo2Chart"></canvas></div>
-      <p class="chart-note">Sensor fit and movement can affect readings. This project is not a medical device.</p>
+      <div class="chart-wrap">
+        <canvas id="spo2Chart"></canvas>
+      </div>
+      <p class="chart-note">
+        Sensor fit and movement can affect readings.
+        This project is not a medical device.
+      </p>
     </article>
 
     <article class="card">
       <h2>Browser Notifications</h2>
-      <p class="hint">Enable notifications on this device for dashboard alerts.</p>
-      <button id="enableNotifications" type="button">Enable Notifications</button>
-      <p id="notificationStatus" class="hint" role="status">Notifications are not configured yet.</p>
+      <p class="hint">
+        Enable notifications on this device for dashboard alerts.
+      </p>
+      <button id="enableNotifications" type="button">
+        Enable Notifications
+      </button>
+      <p id="notificationStatus" class="hint" role="status">
+        Notifications are not configured yet.
+      </p>
     </article>
 
     <article class="card">
       <h2>Connection Status</h2>
-      <div id="connectionStatus" class="status-line">Connecting to Firebase...</div>
-      <button id="toggleDhtStatus" class="small-button" type="button"
-        aria-expanded="false" aria-controls="dhtConnectionDetails">
+
+      <div id="connectionStatus" class="status-line">
+        Connecting to Firebase...
+      </div>
+
+      <button id="toggleDhtStatus"
+        class="small-button"
+        type="button"
+        aria-expanded="false"
+        aria-controls="dhtConnectionDetails">
         Show DHT11 connection status
       </button>
-      <div id="dhtConnectionDetails" class="status-line" hidden role="status">
+
+      <div id="dhtConnectionDetails"
+        class="status-line" hidden role="status">
         DHT11 status has not been checked yet.
       </div>
-      <div id="bodySensorConnectionDetails" class="status-line status-wait">
+
+      <div id="bodySensorConnectionDetails"
+        class="status-line status-wait">
         Body-temperature sensor status: waiting for data.
       </div>
     </article>
@@ -288,58 +487,113 @@ footer { padding:0 18px 25px; color:var(--muted); font-size:12px; }
       <div id="temperatureAlert" class="status-line" hidden></div>
       <div id="humidityAlert" class="status-line" hidden></div>
     </article>
+
   </section>
 
   <!-- AVERAGE READINGS -->
+
   <section id="averages" class="tab-panel">
+
     <article class="card">
       <h2>Average Readings</h2>
+
       <p class="hint">
         Average, previous and latest valid readings. Humidity is excluded.
-        Averages use up to 100 valid readings received during this signed-in session.
+        Averages use up to 100 valid readings received during this
+        signed-in session.
       </p>
 
       <div class="condition-item">
         <h3>Heart Rate</h3>
         <div class="reading-row">
-          <div class="reading-cell"><span class="hint">Average</span><strong id="hrAverage">--</strong><span class="hint">BPM</span></div>
-          <div class="reading-cell"><span class="hint">Previous</span><strong id="hrPrevious">--</strong><span class="hint">BPM</span></div>
-          <div class="reading-cell"><span class="hint">Latest</span><strong id="hrLatest">--</strong><span class="hint">BPM</span></div>
+          <div class="reading-cell">
+            <span class="hint">Average</span>
+            <strong id="hrAverage">--</strong>
+            <span class="hint">BPM</span>
+          </div>
+          <div class="reading-cell">
+            <span class="hint">Previous</span>
+            <strong id="hrPrevious">--</strong>
+            <span class="hint">BPM</span>
+          </div>
+          <div class="reading-cell">
+            <span class="hint">Latest</span>
+            <strong id="hrLatest">--</strong>
+            <span class="hint">BPM</span>
+          </div>
         </div>
       </div>
 
       <div class="condition-item">
         <h3>SpO₂</h3>
         <div class="reading-row">
-          <div class="reading-cell"><span class="hint">Average</span><strong id="spo2Average">--</strong><span class="hint">%</span></div>
-          <div class="reading-cell"><span class="hint">Previous</span><strong id="spo2Previous">--</strong><span class="hint">%</span></div>
-          <div class="reading-cell"><span class="hint">Latest</span><strong id="spo2Latest">--</strong><span class="hint">%</span></div>
+          <div class="reading-cell">
+            <span class="hint">Average</span>
+            <strong id="spo2Average">--</strong>
+            <span class="hint">%</span>
+          </div>
+          <div class="reading-cell">
+            <span class="hint">Previous</span>
+            <strong id="spo2Previous">--</strong>
+            <span class="hint">%</span>
+          </div>
+          <div class="reading-cell">
+            <span class="hint">Latest</span>
+            <strong id="spo2Latest">--</strong>
+            <span class="hint">%</span>
+          </div>
         </div>
       </div>
 
       <div class="condition-item">
         <h3>Room Temperature (DHT11)</h3>
         <div class="reading-row">
-          <div class="reading-cell"><span class="hint">Average</span><strong id="tempAverage">--</strong><span class="hint">°C</span></div>
-          <div class="reading-cell"><span class="hint">Previous</span><strong id="tempPrevious">--</strong><span class="hint">°C</span></div>
-          <div class="reading-cell"><span class="hint">Latest</span><strong id="tempLatest">--</strong><span class="hint">°C</span></div>
+          <div class="reading-cell">
+            <span class="hint">Average</span>
+            <strong id="tempAverage">--</strong>
+            <span class="hint">°C</span>
+          </div>
+          <div class="reading-cell">
+            <span class="hint">Previous</span>
+            <strong id="tempPrevious">--</strong>
+            <span class="hint">°C</span>
+          </div>
+          <div class="reading-cell">
+            <span class="hint">Latest</span>
+            <strong id="tempLatest">--</strong>
+            <span class="hint">°C</span>
+          </div>
         </div>
       </div>
-      <p id="averageDataNote" class="hint">Waiting for valid readings from Firebase.</p>
+
+      <p id="averageDataNote" class="hint">
+        Waiting for valid readings from Firebase.
+      </p>
     </article>
+
   </section>
 
   <!-- PATIENT CONDITION -->
+
   <section id="condition" class="tab-panel">
+
     <article class="card">
       <h2>Patient Condition</h2>
+
       <p class="hint">
-        This is a project status based on configured limits, not a medical diagnosis.
+        This is a project status based on configured limits,
+        not a medical diagnosis.
       </p>
-      <div id="patientConditionStatus" class="status-line status-wait">NO VALID DATA</div>
+
+      <div id="patientConditionStatus"
+        class="status-line status-wait">
+        NO VALID DATA
+      </div>
+
       <div id="patientConditionDetails" class="hint">
         Waiting for valid heart rate, SpO₂ and room-temperature readings.
       </div>
+
       <div class="condition-item">
         <strong>Configured project limits</strong>
         <p class="hint">Heart Rate: 50–120 BPM</p>
@@ -347,125 +601,242 @@ footer { padding:0 18px 25px; color:var(--muted); font-size:12px; }
         <p class="hint">Room temperature: 15–35 °C</p>
       </div>
     </article>
+
   </section>
 
   <!-- BODY TEMPERATURE -->
+
   <section id="bodyTemperature" class="tab-panel">
+
     <article class="card">
-      <h2>Body Temperature Monitoring</h2>
+
+      <div class="inline" style="justify-content:space-between">
+        <h2>Body Temperature Monitoring</h2>
+
+        <button id="hideBodyTemperatureTab"
+          class="secondary-button"
+          type="button">
+          Hide Body Temperature
+        </button>
+      </div>
+
       <p class="hint">
         This section reads from the separate body-temperature sensor.
         It does not use the DHT11 room-temperature value.
       </p>
+
       <div class="grid">
+
         <article class="card">
           <div class="metric-label">Latest Body Temperature</div>
-          <div class="metric"><span id="bodyTempLatest">--</span> <span class="unit">°C</span></div>
-          <div id="bodyTempSensorStatus" class="status-line status-wait">Waiting for sensor data.</div>
+          <div class="metric">
+            <span id="bodyTempLatest">--</span>
+            <span class="unit">°C</span>
+          </div>
+          <div id="bodyTempSensorStatus"
+            class="status-line status-wait">
+            Waiting for sensor data.
+          </div>
         </article>
+
         <article class="card">
           <div class="metric-label">Average Body Temperature</div>
-          <div class="metric"><span id="bodyTempAverage">--</span> <span class="unit">°C</span></div>
-          <p class="hint">Average of up to 100 valid readings in this session.</p>
+          <div class="metric">
+            <span id="bodyTempAverage">--</span>
+            <span class="unit">°C</span>
+          </div>
+          <p class="hint">
+            Average of up to 100 valid readings in this session.
+          </p>
         </article>
+
         <article class="card">
           <div class="metric-label">Previous Body Temperature</div>
-          <div class="metric"><span id="bodyTempPrevious">--</span> <span class="unit">°C</span></div>
-          <p class="hint">Previous different valid sensor reading.</p>
+          <div class="metric">
+            <span id="bodyTempPrevious">--</span>
+            <span class="unit">°C</span>
+          </div>
+          <p class="hint">
+            Previous different valid sensor reading.
+          </p>
         </article>
+
       </div>
+
       <p class="hint">
         Firebase path: <strong>patient/bodyTemperature</strong>.
         Your ESP32 code must upload the new sensor reading to this path.
-        No body-temperature value will appear until the sensor sends data.
       </p>
+
       <p class="hint">
-        This dashboard does not set a medical temperature diagnosis or replace
-        a clinical thermometer.
+        This dashboard does not set a medical temperature diagnosis
+        or replace a clinical thermometer.
       </p>
+
     </article>
+
   </section>
 
   <!-- EMERGENCY -->
+
   <section id="emergency" class="tab-panel">
+
+    <!-- EMERGENCY ALERT CENTRE -->
+
+    <article class="card">
+
+      <h2>Emergency Alert Centre</h2>
+
+      <p class="hint">
+        All dashboard-generated alerts and messages appear here,
+        including alerts when browser notifications are disabled.
+      </p>
+
+      <div id="emergencyAlertCount" class="status-line status-wait">
+        No alerts received.
+      </div>
+
+      <div id="emergencyAlertList" aria-live="polite">
+        <p class="hint">No alerts received yet.</p>
+      </div>
+
+      <button id="clearEmergencyAlerts"
+        class="secondary-button"
+        type="button">
+        Clear Alert History
+      </button>
+
+    </article>
+
     <article id="emergencyStatusCard" class="card" hidden>
       <h2>Physical SOS Status</h2>
-      <div id="emergencyStatus" class="status-line status-bad" hidden></div>
+      <div id="emergencyStatus"
+        class="status-line status-bad" hidden></div>
       <p id="sosTimestamp" class="hint" hidden></p>
-      <p class="hint">This follows the physical SOS button state in Firebase.</p>
+      <p class="hint">
+        This follows the physical SOS button state in Firebase.
+      </p>
     </article>
 
     <article id="gsmSosCard" class="card" hidden>
       <h2>GSM SOS Status</h2>
+
       <div id="gsmSosStatus" class="status-line status-bad"></div>
       <p id="gsmSosTimestamp" class="hint"></p>
       <p id="gsmSmsStatus" class="hint"></p>
       <p id="gsmCallStatus" class="hint"></p>
+
       <div id="gsmAcknowledgeArea" hidden>
-        <button id="gsmAcknowledgeButton" type="button">I Have Read / Verified</button>
+        <button id="gsmAcknowledgeButton" type="button">
+          I Have Read / Verified
+        </button>
         <p id="gsmAcknowledgeStatus" class="hint"></p>
       </div>
+
       <p class="hint">
-        The ESP32/GSM code must monitor the acknowledgement and implement any
-        two-minute escalation. This website cannot itself send GSM SMS messages
-        or place GSM calls.
+        The ESP32/GSM code must monitor the acknowledgement and
+        implement any two-minute escalation. This website cannot
+        itself send GSM SMS messages or place GSM calls.
       </p>
     </article>
 
     <article class="card">
       <h2>Emergency Contact Numbers — India</h2>
       <p class="hint">Use these numbers for a real emergency.</p>
+
       <div class="emergency-numbers">
-        <a class="emergency-number" href="tel:108">Ambulance<strong>108</strong></a>
-        <a class="emergency-number" href="tel:112">National emergency<strong>112</strong></a>
+        <a class="emergency-number" href="tel:108">
+          Ambulance<strong>108</strong>
+        </a>
+        <a class="emergency-number" href="tel:112">
+          National emergency<strong>112</strong>
+        </a>
       </div>
-      <p class="hint">This website does not place calls automatically.</p>
+
+      <p class="hint">
+        This website does not place calls automatically.
+      </p>
     </article>
+
   </section>
 
   <!-- CAMERA -->
+
   <section id="camera" class="tab-panel">
+
     <article class="card">
       <h2>Patient Camera</h2>
+
       <label for="cameraUrl">ESP32-CAM stream URL</label>
+
       <div class="inline">
         <input id="cameraUrl" type="text"
           value="http://192.168.166.81:81/stream"
           placeholder="http://CAMERA-IP:81/stream"
-          autocomplete="url" spellcheck="false">
-        <button id="toggleCamera" type="button">Show Camera</button>
-        <button id="openCameraStream" class="secondary-button" type="button">Open Stream in Browser</button>
+          autocomplete="url"
+          spellcheck="false">
+
+        <button id="toggleCamera" type="button">
+          Show Camera
+        </button>
+
+        <button id="openCameraStream"
+          class="secondary-button"
+          type="button">
+          Open Stream in Browser
+        </button>
       </div>
+
       <div id="cameraFrame" class="camera-frame" hidden></div>
-      <p id="cameraStatus" class="hint" role="status">Camera is hidden. Select Show Camera to connect.</p>
+
+      <p id="cameraStatus" class="hint" role="status">
+        Camera is hidden. Select Show Camera to connect.
+      </p>
+
       <p class="hint">
-        Keep the laptop and ESP32-CAM on the same Wi-Fi network. The camera IP
-        may change. HTTPS GitHub Pages may block an HTTP stream as mixed content.
+        Keep the laptop and ESP32-CAM on the same Wi-Fi network.
+        The camera IP may change. HTTPS GitHub Pages may block
+        an HTTP stream as mixed content.
       </p>
     </article>
+
   </section>
 
   <!-- MEDICINE REMINDERS -->
+
   <section id="medicine" class="tab-panel">
+
     <article class="card">
       <h2>Medicine Reminders</h2>
+
       <label for="medicineName">Medicine / reminder name</label>
-      <input id="medicineName" type="text" placeholder="Enter reminder name">
+      <input id="medicineName" type="text"
+        placeholder="Enter reminder name">
+
       <label for="medicineTime">Reminder time</label>
       <input id="medicineTime" type="time">
-      <button id="addReminder" type="button">Add Reminder</button>
+
+      <button id="addReminder" type="button">
+        Add Reminder
+      </button>
+
       <div id="reminderList" aria-live="polite"></div>
+
       <p class="hint">
-        Reminders are stored in Firebase. The ESP32 code must read reminder data
-        and activate the physical buzzer.
+        Reminders are stored in Firebase. The ESP32 code must read
+        reminder data and activate the physical buzzer.
       </p>
     </article>
+
   </section>
+
 </main>
 
 <footer>
-  PatientCare IoT • ESP32 • MAX30102 • DHT11 • Body-temperature sensor • ESP32-CAM • GSM.
-  This dashboard is a school project monitor, not a substitute for professional medical equipment.
+  PatientCare IoT • ESP32 • MAX30102 • DHT11 • Body-temperature sensor
+  • ESP32-CAM • GSM.
+  This dashboard is a school project monitor, not a substitute
+  for professional medical equipment.
 </footer>
 
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js"></script>
@@ -478,6 +849,7 @@ footer { padding:0 18px 25px; color:var(--muted); font-size:12px; }
 "use strict";
 
 /* FIREBASE CONFIGURATION */
+
 const firebaseConfig = {
   apiKey: "AIzaSyDTsZETn9adSCIfHRYwcAthN21qdA8eRr0",
   authDomain: "patient-monitoring-iot-c87f7.firebaseapp.com",
@@ -492,24 +864,29 @@ const VAPID_KEY =
   "BJsTlmg0fAr6Nyiq09DEv_CRxT80eEMTSEM2B-p3aaoslIaSuHVA3e8EDn3KHTAjGKMpsPkk-_g4y6Em0DzfZdg";
 
 /* PROJECT REFERENCE LIMITS */
+
 const HR_LOW_LIMIT = 50;
 const HR_HIGH_LIMIT = 120;
 const SPO2_LOW_LIMIT = 90;
 const SPO2_HIGH_LIMIT = 100;
 const TEMP_LOW_LIMIT = 15;
 const TEMP_HIGH_LIMIT = 35;
+const HUMIDITY_LOW_LIMIT = 30;
+const HUMIDITY_HIGH_LIMIT = 80;
 
-/* Technical plausibility range only; not a medical reference range. */
 const BODY_TEMP_MIN_VALID = 25;
 const BODY_TEMP_MAX_VALID = 45;
 
 const MAX_HISTORY_POINTS = 100;
+const MAX_EMERGENCY_MESSAGES = 50;
+
 const $ = (id) => document.getElementById(id);
 
 let auth = null;
 let database = null;
 let messaging = null;
 let signedInUser = null;
+
 let databaseListenersStarted = false;
 let cameraVisible = false;
 let dhtSensorConnected = null;
@@ -519,12 +896,15 @@ let previousGsmSosActive = null;
 let previousHeartRateAlert = null;
 let previousSpo2Alert = null;
 let previousTemperatureAlert = null;
+let previousHumidityAlert = null;
 
 let temperatureAlertActive = false;
 let humidityAlertActive = false;
 
 let heartRateChart = null;
 let spo2Chart = null;
+
+const emergencyMessages = [];
 
 const heartRateHistory = [];
 const spo2History = [];
@@ -551,42 +931,193 @@ const previousReadings = {
   bodyTemperature: null
 };
 
+
 /* TABS */
+
 document.querySelectorAll(".tab-button").forEach((button) => {
   button.addEventListener("click", () => {
+
     document.querySelectorAll(".tab-button").forEach((item) => {
       item.classList.remove("active");
     });
+
     document.querySelectorAll(".tab-panel").forEach((panel) => {
       panel.classList.remove("active");
     });
+
     button.classList.add("active");
+
     const panel = $(button.dataset.tab);
-    if (panel) panel.classList.add("active");
+    if (panel && !panel.hidden) {
+      panel.classList.add("active");
+    }
   });
 });
 
+
+/* BODY TEMPERATURE TAB HIDE / SHOW */
+
+function setBodyTemperatureTabVisible(visible) {
+
+  const tabButton = $("bodyTemperatureTabButton");
+  const tabPanel = $("bodyTemperature");
+  const showButton = $("showBodyTemperatureTab");
+
+  tabButton.hidden = !visible;
+  tabPanel.hidden = !visible;
+  showButton.hidden = visible;
+
+  $("bodyTemperatureVisibilityStatus").textContent = visible
+    ? "Body Temperature section is visible."
+    : "Body Temperature section is hidden.";
+
+  if (!visible && tabPanel.classList.contains("active")) {
+
+    document.querySelectorAll(".tab-button").forEach((button) => {
+      button.classList.remove("active");
+    });
+
+    document.querySelectorAll(".tab-panel").forEach((panel) => {
+      panel.classList.remove("active");
+    });
+
+    document.querySelector('[data-tab="dashboard"]')
+      .classList.add("active");
+
+    $("dashboard").classList.add("active");
+  }
+}
+
+$("hideBodyTemperatureTab").addEventListener("click", () => {
+  setBodyTemperatureTabVisible(false);
+});
+
+$("showBodyTemperatureTab").addEventListener("click", () => {
+  setBodyTemperatureTabVisible(true);
+});
+
+
+/* EMERGENCY ALERT CENTRE */
+
+function addEmergencyMessage(title, message, type = "danger") {
+
+  const entry = {
+    title: String(title || "PatientCare Alert"),
+    message: String(message || "Please check the dashboard."),
+    time: new Date(),
+    type
+  };
+
+  // Avoid duplicate entries from the same alert arriving
+  // through both a sensor listener and its Firebase alert flag.
+  const duplicate = emergencyMessages.some((old) => {
+    return old.title === entry.title &&
+      old.message === entry.message &&
+      Math.abs(old.time.getTime() - entry.time.getTime()) < 5000;
+  });
+
+  if (duplicate) return;
+
+  emergencyMessages.unshift(entry);
+
+  if (emergencyMessages.length > MAX_EMERGENCY_MESSAGES) {
+    emergencyMessages.pop();
+  }
+
+  renderEmergencyMessages();
+}
+
+function renderEmergencyMessages() {
+
+  const list = $("emergencyAlertList");
+  const count = $("emergencyAlertCount");
+
+  list.replaceChildren();
+
+  count.textContent = emergencyMessages.length === 0
+    ? "No alerts received."
+    : emergencyMessages.length + " alert(s) recorded.";
+
+  if (emergencyMessages.length === 0) {
+
+    const empty = document.createElement("p");
+    empty.className = "hint";
+    empty.textContent = "No alerts received yet.";
+
+    list.appendChild(empty);
+    count.className = "status-line status-wait";
+
+    return;
+  }
+
+  count.className = "status-line status-bad";
+
+  emergencyMessages.forEach((entry) => {
+
+    const item = document.createElement("div");
+    item.className = "emergency-alert-item";
+
+    if (entry.type === "info") {
+      item.classList.add("info-alert");
+    } else if (entry.type === "warning") {
+      item.classList.add("warning-alert");
+    }
+
+    const title = document.createElement("strong");
+    title.textContent = entry.title;
+
+    const message = document.createElement("div");
+    message.textContent = entry.message;
+
+    const time = document.createElement("span");
+    time.className = "emergency-alert-time";
+    time.textContent = "Time: " + entry.time.toLocaleString();
+
+    item.append(title, message, time);
+    list.appendChild(item);
+  });
+}
+
+$("clearEmergencyAlerts").addEventListener("click", () => {
+
+  emergencyMessages.length = 0;
+  renderEmergencyMessages();
+
+});
+
+
 /* GENERAL HELPERS */
+
 function setLoginMessage(message, isError = false) {
   $("loginMessage").textContent = message;
-  $("loginMessage").style.color = isError ? "#fca5a5" : "#a8b5cc";
+  $("loginMessage").style.color =
+    isError ? "#fca5a5" : "#a8b5cc";
 }
 
 function showConnection(message, isError = false) {
   $("connectionStatus").textContent = message;
-  $("connectionStatus").style.color = isError ? "#fca5a5" : "#a8b5cc";
+  $("connectionStatus").style.color =
+    isError ? "#fca5a5" : "#a8b5cc";
 }
 
 function setStatus(element, message, type) {
+
   element.textContent = message;
+
   element.className = "status-line " +
     (type === "good" ? "status-good" :
-     type === "bad" ? "status-bad" : "status-wait");
+     type === "bad" ? "status-bad" :
+     "status-wait");
 }
 
 function parseValidNumber(value) {
-  if (value === null || value === undefined || value === "") return null;
+
+  if (value === null || value === undefined || value === "") {
+    return null;
+  }
+
   const number = Number(value);
+
   return Number.isFinite(number) ? number : null;
 }
 
@@ -603,34 +1134,48 @@ function isValidTemperature(value) {
 }
 
 function isValidBodyTemperature(value) {
+
   return value !== null &&
     value >= BODY_TEMP_MIN_VALID &&
     value <= BODY_TEMP_MAX_VALID;
 }
 
+
 /* READING HISTORY */
+
 function addReading(metric, rawValue) {
+
   const value = parseValidNumber(rawValue);
+
   if (value === null) return;
 
   let valid = false;
+
   if (metric === "heartRate") valid = isValidHeartRate(value);
   if (metric === "spo2") valid = isValidSpo2(value);
   if (metric === "temperature") valid = isValidTemperature(value);
   if (metric === "bodyTemperature") valid = isValidBodyTemperature(value);
+
   if (!valid) return;
 
   const oldValue = latestReadings[metric];
 
-  // Ignore duplicate Firebase snapshots containing the same value.
+  // Ignore duplicate Firebase snapshots.
   if (oldValue !== null && oldValue === value) return;
 
-  if (oldValue !== null) previousReadings[metric] = oldValue;
+  if (oldValue !== null) {
+    previousReadings[metric] = oldValue;
+  }
+
   latestReadings[metric] = value;
 
   const history = readingHistory[metric];
+
   history.push(value);
-  if (history.length > MAX_HISTORY_POINTS) history.shift();
+
+  if (history.length > MAX_HISTORY_POINTS) {
+    history.shift();
+  }
 
   updateAverageDisplay();
   updatePatientCondition();
@@ -638,28 +1183,48 @@ function addReading(metric, rawValue) {
 }
 
 function averageOf(values) {
+
   if (!values.length) return null;
-  return values.reduce((sum, value) => sum + value, 0) / values.length;
+
+  return values.reduce((sum, value) => sum + value, 0) /
+    values.length;
 }
 
 function formatted(value, decimals = 1) {
+
   return value === null || value === undefined
     ? "--"
     : Number(value).toFixed(decimals);
 }
 
 function updateAverageDisplay() {
-  $("hrAverage").textContent = formatted(averageOf(readingHistory.heartRate));
-  $("hrPrevious").textContent = formatted(previousReadings.heartRate);
-  $("hrLatest").textContent = formatted(latestReadings.heartRate);
 
-  $("spo2Average").textContent = formatted(averageOf(readingHistory.spo2));
-  $("spo2Previous").textContent = formatted(previousReadings.spo2);
-  $("spo2Latest").textContent = formatted(latestReadings.spo2);
+  $("hrAverage").textContent =
+    formatted(averageOf(readingHistory.heartRate));
 
-  $("tempAverage").textContent = formatted(averageOf(readingHistory.temperature));
-  $("tempPrevious").textContent = formatted(previousReadings.temperature);
-  $("tempLatest").textContent = formatted(latestReadings.temperature);
+  $("hrPrevious").textContent =
+    formatted(previousReadings.heartRate);
+
+  $("hrLatest").textContent =
+    formatted(latestReadings.heartRate);
+
+  $("spo2Average").textContent =
+    formatted(averageOf(readingHistory.spo2));
+
+  $("spo2Previous").textContent =
+    formatted(previousReadings.spo2);
+
+  $("spo2Latest").textContent =
+    formatted(latestReadings.spo2);
+
+  $("tempAverage").textContent =
+    formatted(averageOf(readingHistory.temperature));
+
+  $("tempPrevious").textContent =
+    formatted(previousReadings.temperature);
+
+  $("tempLatest").textContent =
+    formatted(latestReadings.temperature);
 
   const count = Math.max(
     readingHistory.heartRate.length,
@@ -673,8 +1238,11 @@ function updateAverageDisplay() {
     : "Waiting for valid readings from Firebase.";
 }
 
-/* BODY TEMPERATURE TAB */
+
+/* BODY TEMPERATURE DISPLAY */
+
 function updateBodyTemperatureDisplay() {
+
   const latest = latestReadings.bodyTemperature;
   const previous = previousReadings.bodyTemperature;
   const average = averageOf(readingHistory.bodyTemperature);
@@ -682,25 +1250,31 @@ function updateBodyTemperatureDisplay() {
   $("bodyTempLatest").textContent = formatted(latest);
   $("bodyTempPrevious").textContent = formatted(previous);
   $("bodyTempAverage").textContent = formatted(average);
+
   $("bodyTemperatureDashboard").textContent = formatted(latest);
 
   if (latest === null) {
+
     setStatus(
       $("bodyTempSensorStatus"),
       "Waiting for body-temperature sensor data.",
       "wait"
     );
+
     setStatus(
       $("bodySensorConnectionDetails"),
       "No valid body-temperature reading received. Check the sensor and Firebase path patient/bodyTemperature.",
       "wait"
     );
+
   } else {
+
     setStatus(
       $("bodyTempSensorStatus"),
       "Valid body-temperature sensor data received.",
       "good"
     );
+
     setStatus(
       $("bodySensorConnectionDetails"),
       "Body-temperature sensor data received from Firebase.",
@@ -709,10 +1283,11 @@ function updateBodyTemperatureDisplay() {
   }
 }
 
-/* PATIENT CONDITION
-   Uses HR, SpO2 and DHT11 room temperature, as in the supplied project limits.
-   It does not treat room temperature as body temperature. */
+
+/* PATIENT CONDITION */
+
 function updatePatientCondition() {
+
   const status = $("patientConditionStatus");
   const details = $("patientConditionDetails");
 
@@ -727,13 +1302,18 @@ function updatePatientCondition() {
     dhtSensorConnected === true;
 
   if (!allAvailable) {
+
     setStatus(status, "NO VALID DATA", "wait");
+
     const missing = [];
+
     if (hr === null) missing.push("Heart rate");
     if (spo2 === null) missing.push("SpO₂");
+
     if (temp === null || dhtSensorConnected !== true) {
       missing.push("Valid DHT11 room temperature");
     }
+
     details.textContent = "Waiting for: " + missing.join(", ") + ".";
     return;
   }
@@ -744,39 +1324,54 @@ function updatePatientCondition() {
     problems.push("Heart rate is outside " +
       HR_LOW_LIMIT + "–" + HR_HIGH_LIMIT + " BPM");
   }
+
   if (spo2 < SPO2_LOW_LIMIT || spo2 > SPO2_HIGH_LIMIT) {
     problems.push("SpO₂ is outside " +
       SPO2_LOW_LIMIT + "–" + SPO2_HIGH_LIMIT + "%");
   }
+
   if (temp < TEMP_LOW_LIMIT || temp > TEMP_HIGH_LIMIT) {
     problems.push("Room temperature is outside " +
       TEMP_LOW_LIMIT + "–" + TEMP_HIGH_LIMIT + " °C");
   }
 
   if (problems.length) {
+
     setStatus(status, "CHECK REQUIRED", "bad");
     details.textContent = problems.join(". ") + ".";
+
   } else {
+
     setStatus(status, "ALRIGHT — WITHIN PROJECT LIMITS", "good");
+
     details.textContent =
       "The latest readings are within the configured project limits. " +
       "This does not confirm medical health.";
   }
 }
 
+
 /* CHARTS */
+
 function createHistoryChart(
   canvasId, title, lineColor, minValue, maxValue,
   lowerRef, upperRef, unit
 ) {
+
   const canvas = $(canvasId);
+
   if (!canvas || !window.Chart) return null;
 
   return new Chart(canvas, {
+
     type: "line",
+
     data: {
+
       labels: [],
+
       datasets: [
+
         {
           label: title,
           data: [],
@@ -787,6 +1382,7 @@ function createHistoryChart(
           tension: 0.2,
           spanGaps: false
         },
+
         {
           label: "Reference lower (" + lowerRef + unit + ")",
           data: [],
@@ -795,6 +1391,7 @@ function createHistoryChart(
           borderWidth: 1.5,
           pointRadius: 0
         },
+
         {
           label: "Reference upper (" + upperRef + unit + ")",
           data: [],
@@ -803,136 +1400,264 @@ function createHistoryChart(
           borderWidth: 1.5,
           pointRadius: 0
         }
+
       ]
     },
+
     options: {
+
       responsive: true,
       maintainAspectRatio: false,
       animation: false,
-      interaction: { intersect: false, mode: "index" },
-      plugins: { legend: { labels: { color: "#eef4ff" } } },
+
+      interaction: {
+        intersect: false,
+        mode: "index"
+      },
+
+      plugins: {
+        legend: {
+          labels: { color: "#eef4ff" }
+        }
+      },
+
       scales: {
+
         x: {
-          ticks: { color: "#a8b5cc", maxTicksLimit: 6 },
-          grid: { color: "rgba(168,181,204,0.12)" }
+          ticks: {
+            color: "#a8b5cc",
+            maxTicksLimit: 6
+          },
+          grid: {
+            color: "rgba(168,181,204,0.12)"
+          }
         },
+
         y: {
           min: minValue,
           max: maxValue,
           ticks: { color: "#a8b5cc" },
-          grid: { color: "rgba(168,181,204,0.12)" },
-          title: { display: true, text: unit.trim(), color: "#a8b5cc" }
+          grid: {
+            color: "rgba(168,181,204,0.12)"
+          },
+          title: {
+            display: true,
+            text: unit.trim(),
+            color: "#a8b5cc"
+          }
         }
+
       }
     }
   });
 }
 
 function initialiseHistoryCharts() {
+
   if (!window.Chart) {
     showConnection("Chart.js did not load. Check internet and reload.", true);
     return;
   }
+
   if (!heartRateChart) {
+
     heartRateChart = createHistoryChart(
-      "heartRateChart", "Heart rate", "#60a5fa",
-      30, 180, 60, 100, " BPM"
+      "heartRateChart",
+      "Heart rate",
+      "#60a5fa",
+      30,
+      180,
+      60,
+      100,
+      " BPM"
     );
   }
+
   if (!spo2Chart) {
+
     spo2Chart = createHistoryChart(
-      "spo2Chart", "SpO₂", "#c084fc",
-      70, 100, 95, 100, "%"
+      "spo2Chart",
+      "SpO₂",
+      "#c084fc",
+      70,
+      100,
+      95,
+      100,
+      "%"
     );
   }
 }
 
 function addHistoryPoint(history, chart, rawValue) {
+
   const value = parseValidNumber(rawValue);
+
   if (value === null || value <= 0) return;
 
-  const last = history.length ? history[history.length - 1].value : null;
+  const last = history.length
+    ? history[history.length - 1].value
+    : null;
+
   if (last === value) return;
 
-  history.push({ time: new Date(), value });
-  if (history.length > MAX_HISTORY_POINTS) history.shift();
+  history.push({
+    time: new Date(),
+    value
+  });
+
+  if (history.length > MAX_HISTORY_POINTS) {
+    history.shift();
+  }
+
   if (!chart) return;
 
-  chart.data.labels = history.map((item) => item.time.toLocaleTimeString());
-  chart.data.datasets[0].data = history.map((item) => item.value);
+  chart.data.labels = history.map((item) =>
+    item.time.toLocaleTimeString()
+  );
+
+  chart.data.datasets[0].data =
+    history.map((item) => item.value);
+
   chart.data.datasets[1].data = history.map(() =>
     chart === heartRateChart ? 60 : 95
   );
-  chart.data.datasets[2].data = history.map(() => 100);
+
+  chart.data.datasets[2].data =
+    history.map(() => 100);
+
   chart.update("none");
 }
 
-/* NOTIFICATIONS */
+
+/* NOTIFICATIONS AND EMERGENCY MESSAGE RECORDING */
+
 async function showPatientCareNotification(title, body, tag) {
+
+  // IMPORTANT:
+  // Record the alert in Emergency before checking browser permission.
+  // Therefore the Emergency tab works even if notifications are disabled.
+
+  addEmergencyMessage(title, body, "danger");
+
   const status = $("notificationStatus");
 
   if (!("Notification" in window)) {
-    if (status) status.textContent = "This browser does not support notifications.";
+    if (status) {
+      status.textContent =
+        "This browser does not support notifications. Alert recorded in Emergency.";
+    }
     return false;
   }
+
   if (Notification.permission !== "granted") {
-    if (status) status.textContent =
-      "Allow notifications using the Enable Notifications button.";
+    if (status) {
+      status.textContent =
+        "Alert recorded in Emergency. Allow browser notifications using the Enable Notifications button.";
+    }
     return false;
   }
 
   try {
+
     if ("serviceWorker" in navigator) {
-      const registrations = await navigator.serviceWorker.getRegistrations();
-      const registration = registrations.find((item) => item.active);
+
+      const registrations =
+        await navigator.serviceWorker.getRegistrations();
+
+      const registration =
+        registrations.find((item) => item.active);
 
       if (registration && registration.showNotification) {
+
         await registration.showNotification(title, {
           body,
           tag,
           renotify: true
         });
+
       } else {
-        const notification = new Notification(title, { body, tag });
+
+        const notification =
+          new Notification(title, { body, tag });
+
         notification.onclick = () => {
           window.focus();
           notification.close();
         };
       }
+
     } else {
-      const notification = new Notification(title, { body, tag });
+
+      const notification =
+        new Notification(title, { body, tag });
+
       notification.onclick = () => {
         window.focus();
         notification.close();
       };
     }
 
-    if (status) status.textContent = "Browser notification displayed: " + title;
+    if (status) {
+      status.textContent =
+        "Browser notification displayed: " + title;
+    }
+
     return true;
+
   } catch (error) {
+
     console.error("Notification error:", error);
-    if (status) status.textContent = "Notification failed: " + error.message;
+
+    if (status) {
+      status.textContent =
+        "Notification failed: " + error.message +
+        ". Alert is recorded in Emergency.";
+    }
+
     return false;
   }
 }
 
+
 /* DHT11 STATUS AND ALERTS */
+
 function updateDhtStatusDisplay() {
+
   const details = $("dhtConnectionDetails");
 
   if (dhtSensorConnected === true) {
-    setStatus(details, "DHT11 reports valid sensor readings.", "good");
+
+    setStatus(
+      details,
+      "DHT11 reports valid sensor readings.",
+      "good"
+    );
+
   } else if (dhtSensorConnected === false) {
-    setStatus(details, "DHT11 reading is invalid or sensor is not connected.", "bad");
+
+    setStatus(
+      details,
+      "DHT11 reading is invalid or sensor is not connected.",
+      "bad"
+    );
+
   } else {
-    setStatus(details, "Waiting for /patient/dhtValid from ESP32.", "wait");
+
+    setStatus(
+      details,
+      "Waiting for /patient/dhtValid from ESP32.",
+      "wait"
+    );
   }
+
   updatePatientCondition();
 }
 
 function updateEnvironmentAlerts() {
+
   const showTemperature =
     dhtSensorConnected === true && temperatureAlertActive;
+
   const showHumidity =
     dhtSensorConnected === true && humidityAlertActive;
 
@@ -940,12 +1665,21 @@ function updateEnvironmentAlerts() {
   $("humidityAlert").hidden = !showHumidity;
 
   if (showTemperature) {
-    setStatus($("temperatureAlert"),
-      "Room temperature is outside the configured reference range.", "bad");
+
+    setStatus(
+      $("temperatureAlert"),
+      "Room temperature is outside the configured reference range.",
+      "bad"
+    );
   }
+
   if (showHumidity) {
-    setStatus($("humidityAlert"),
-      "Humidity is outside the configured reference range.", "bad");
+
+    setStatus(
+      $("humidityAlert"),
+      "Humidity is outside the configured reference range.",
+      "bad"
+    );
   }
 
   $("environmentAlertsCard").hidden =
@@ -953,50 +1687,75 @@ function updateEnvironmentAlerts() {
 }
 
 $("toggleDhtStatus").addEventListener("click", () => {
+
   const details = $("dhtConnectionDetails");
   const opening = details.hidden;
+
   details.hidden = !opening;
 
   $("toggleDhtStatus").textContent = opening
     ? "Hide DHT11 connection status"
     : "Show DHT11 connection status";
 
-  $("toggleDhtStatus").setAttribute("aria-expanded", String(opening));
+  $("toggleDhtStatus").setAttribute(
+    "aria-expanded",
+    String(opening)
+  );
+
   if (opening) updateDhtStatusDisplay();
 });
 
+
 /* PHYSICAL SOS */
+
 function setSosUnavailable() {
+
   $("emergencyStatusCard").hidden = true;
   $("emergencyStatus").hidden = true;
   $("sosTimestamp").hidden = true;
 }
 
 function setSosStatus(active, timestamp) {
+
   $("emergencyStatusCard").hidden = !active;
   $("emergencyStatus").hidden = !active;
   $("sosTimestamp").hidden = !active;
 
   if (!active) {
+
     $("emergencyStatus").textContent = "";
     $("sosTimestamp").textContent = "";
+
     return;
   }
 
-  setStatus($("emergencyStatus"), "SOS ALERT — PHYSICAL SOS IS ACTIVE", "bad");
+  setStatus(
+    $("emergencyStatus"),
+    "SOS ALERT — PHYSICAL SOS IS ACTIVE",
+    "bad"
+  );
 
   if (timestamp) {
+
     const date = new Date(timestamp);
+
     $("sosTimestamp").textContent =
       "Last SOS time: " +
-      (Number.isNaN(date.getTime()) ? String(timestamp) : date.toLocaleString());
+      (Number.isNaN(date.getTime())
+        ? String(timestamp)
+        : date.toLocaleString());
+
   } else {
+
     $("sosTimestamp").textContent = "SOS is active.";
   }
 }
 
+
 /* GSM SOS */
+
 function setGsmSosStatus(data) {
+
   const card = $("gsmSosCard");
 
   if (!data || typeof data !== "object") {
@@ -1005,6 +1764,7 @@ function setGsmSosStatus(data) {
   }
 
   const active = data.active === true;
+
   card.hidden = !active;
 
   if (!active) {
@@ -1012,47 +1772,74 @@ function setGsmSosStatus(data) {
     return;
   }
 
-  setStatus($("gsmSosStatus"), "GSM SOS IS ACTIVE", "bad");
-  $("gsmSmsStatus").textContent = "SMS status: " + (data.smsStatus || "Not reported");
-  $("gsmCallStatus").textContent = "Call status: " + (data.callStatus || "Not reported");
+  setStatus(
+    $("gsmSosStatus"),
+    "GSM SOS IS ACTIVE",
+    "bad"
+  );
+
+  $("gsmSmsStatus").textContent =
+    "SMS status: " + (data.smsStatus || "Not reported");
+
+  $("gsmCallStatus").textContent =
+    "Call status: " + (data.callStatus || "Not reported");
 
   if (data.timestamp) {
+
     const date = new Date(data.timestamp);
+
     $("gsmSosTimestamp").textContent =
       "GSM SOS time: " +
-      (Number.isNaN(date.getTime()) ? String(data.timestamp) : date.toLocaleString());
+      (Number.isNaN(date.getTime())
+        ? String(data.timestamp)
+        : date.toLocaleString());
+
   } else {
-    $("gsmSosTimestamp").textContent = "GSM SOS is active.";
+
+    $("gsmSosTimestamp").textContent =
+      "GSM SOS is active.";
   }
 
   const acknowledged = data.acknowledged === true;
+
   $("gsmAcknowledgeArea").hidden = acknowledged;
+
   $("gsmAcknowledgeStatus").textContent = acknowledged
     ? "This GSM SOS has been acknowledged."
     : "Please check the alert and acknowledge it after reading.";
 }
 
 $("gsmAcknowledgeButton").addEventListener("click", async () => {
+
   if (!database || !auth || !auth.currentUser) {
     alert("Sign in first.");
     return;
   }
 
   try {
+
     await database.ref("patient/gsmSos").update({
       acknowledged: true,
       acknowledgedAt: Date.now(),
       acknowledgedBy: auth.currentUser.email || "Dashboard user"
     });
+
     $("gsmAcknowledgeArea").hidden = true;
-    $("gsmAcknowledgeStatus").textContent = "Acknowledgement saved in Firebase.";
+
+    $("gsmAcknowledgeStatus").textContent =
+      "Acknowledgement saved in Firebase.";
+
   } catch (error) {
+
     alert("Could not save acknowledgement: " + error.message);
   }
 });
 
+
 /* STOP FIREBASE LISTENERS */
+
 function stopDatabaseListeners() {
+
   if (!database || !databaseListenersStarted) return;
 
   const paths = [
@@ -1071,12 +1858,18 @@ function stopDatabaseListeners() {
     "medicineReminders"
   ];
 
-  paths.forEach((path) => database.ref(path).off());
+  paths.forEach((path) => {
+    database.ref(path).off();
+  });
+
   databaseListenersStarted = false;
 }
 
+
 /* CLEAR SIGNED-IN SESSION DATA */
+
 function clearSessionData() {
+
   Object.keys(readingHistory).forEach((key) => {
     readingHistory[key].length = 0;
   });
@@ -1092,14 +1885,19 @@ function clearSessionData() {
   heartRateHistory.length = 0;
   spo2History.length = 0;
 
+  emergencyMessages.length = 0;
+  renderEmergencyMessages();
+
   previousSosActive = null;
   previousGsmSosActive = null;
   previousHeartRateAlert = null;
   previousSpo2Alert = null;
   previousTemperatureAlert = null;
+  previousHumidityAlert = null;
 
   temperatureAlertActive = false;
   humidityAlertActive = false;
+
   dhtSensorConnected = null;
 
   updateAverageDisplay();
@@ -1109,14 +1907,24 @@ function clearSessionData() {
   updateBodyTemperatureDisplay();
 
   if (heartRateChart) {
+
     heartRateChart.data.labels = [];
-    heartRateChart.data.datasets.forEach((dataset) => dataset.data = []);
+
+    heartRateChart.data.datasets.forEach((dataset) => {
+      dataset.data = [];
+    });
+
     heartRateChart.update("none");
   }
 
   if (spo2Chart) {
+
     spo2Chart.data.labels = [];
-    spo2Chart.data.datasets.forEach((dataset) => dataset.data = []);
+
+    spo2Chart.data.datasets.forEach((dataset) => {
+      dataset.data = [];
+    });
+
     spo2Chart.update("none");
   }
 
@@ -1126,31 +1934,58 @@ function clearSessionData() {
   $("humidity").textContent = "--";
 
   setSosUnavailable();
+
   $("gsmSosCard").hidden = true;
 }
 
+
 /* START FIREBASE LISTENERS */
+
 function startDatabaseListeners() {
-  if (!database || databaseListenersStarted || !signedInUser) return;
+
+  if (!database || databaseListenersStarted || !signedInUser) {
+    return;
+  }
 
   databaseListenersStarted = true;
+
   initialiseHistoryCharts();
+
   showConnection("Signed in; connecting to Firebase...");
 
+
+  /* FIREBASE CONNECTION */
+
   database.ref(".info/connected").on("value", (snapshot) => {
+
     if (snapshot.val() === true) {
-      showConnection("Connected to Firebase; waiting for live values.");
+
+      showConnection(
+        "Connected to Firebase; waiting for live values."
+      );
+
     } else {
-      showConnection("Disconnected from Firebase. Live readings may be unavailable.", true);
+
+      showConnection(
+        "Disconnected from Firebase. Live readings may be unavailable.",
+        true
+      );
     }
-  }, (error) => showConnection("Connection error: " + error.message, true));
+
+  }, (error) => {
+    showConnection("Connection error: " + error.message, true);
+  });
+
 
   /* HEART RATE */
+
   database.ref("patient/heartRate").on("value", (snapshot) => {
+
     const raw = snapshot.val();
     const value = parseValidNumber(raw);
 
-    $("heartRate").textContent = isValidHeartRate(value) ? String(raw) : "--";
+    $("heartRate").textContent =
+      isValidHeartRate(value) ? String(raw) : "--";
 
     if (!isValidHeartRate(value)) {
       previousHeartRateAlert = null;
@@ -1158,11 +1993,18 @@ function startDatabaseListeners() {
     }
 
     addReading("heartRate", value);
-    addHistoryPoint(heartRateHistory, heartRateChart, value);
 
-    const alertNow = value < HR_LOW_LIMIT || value > HR_HIGH_LIMIT;
+    addHistoryPoint(
+      heartRateHistory,
+      heartRateChart,
+      value
+    );
+
+    const alertNow =
+      value < HR_LOW_LIMIT || value > HR_HIGH_LIMIT;
 
     if (alertNow && previousHeartRateAlert !== true) {
+
       const reason = value < HR_LOW_LIMIT
         ? "Heart rate LOW: " + value + " BPM."
         : "Heart rate HIGH: " + value + " BPM.";
@@ -1173,15 +2015,23 @@ function startDatabaseListeners() {
         "patientcare-heart-rate"
       );
     }
+
     previousHeartRateAlert = alertNow;
-  }, (error) => showConnection("Heart-rate read error: " + error.message, true));
+
+  }, (error) => {
+    showConnection("Heart-rate read error: " + error.message, true);
+  });
+
 
   /* SPO2 */
+
   database.ref("patient/spo2").on("value", (snapshot) => {
+
     const raw = snapshot.val();
     const value = parseValidNumber(raw);
 
-    $("spo2").textContent = isValidSpo2(value) ? String(raw) : "--";
+    $("spo2").textContent =
+      isValidSpo2(value) ? String(raw) : "--";
 
     if (!isValidSpo2(value)) {
       previousSpo2Alert = null;
@@ -1189,33 +2039,52 @@ function startDatabaseListeners() {
     }
 
     addReading("spo2", value);
-    addHistoryPoint(spo2History, spo2Chart, value);
+
+    addHistoryPoint(
+      spo2History,
+      spo2Chart,
+      value
+    );
 
     const alertNow = value < SPO2_LOW_LIMIT;
 
     if (alertNow && previousSpo2Alert !== true) {
+
       showPatientCareNotification(
         "PatientCare SpO₂ Alert",
-        "SpO₂ is below the configured project limit: " + value + "%.",
+        "SpO₂ is below the configured project limit: " +
+          value + "%.",
         "patientcare-spo2"
       );
     }
+
     previousSpo2Alert = alertNow;
-  }, (error) => showConnection("SpO₂ read error: " + error.message, true));
+
+  }, (error) => {
+    showConnection("SpO₂ read error: " + error.message, true);
+  });
+
 
   /* DHT11 ROOM TEMPERATURE */
+
   database.ref("patient/temperature").on("value", (snapshot) => {
+
     const value = parseValidNumber(snapshot.val());
 
     $("temperature").textContent =
-      value !== null && isValidTemperature(value) ? value.toFixed(1) : "--";
+      value !== null && isValidTemperature(value)
+        ? value.toFixed(1)
+        : "--";
 
     if (isValidTemperature(value) && dhtSensorConnected === true) {
+
       addReading("temperature", value);
 
-      const alertNow = value < TEMP_LOW_LIMIT || value > TEMP_HIGH_LIMIT;
+      const alertNow =
+        value < TEMP_LOW_LIMIT || value > TEMP_HIGH_LIMIT;
 
       if (alertNow && previousTemperatureAlert !== true) {
+
         showPatientCareNotification(
           "PatientCare Room Temperature Alert",
           "Room temperature is outside the configured project range: " +
@@ -1223,92 +2092,228 @@ function startDatabaseListeners() {
           "patientcare-temperature"
         );
       }
+
       previousTemperatureAlert = alertNow;
+
     } else {
+
       latestReadings.temperature = null;
+
       updateAverageDisplay();
       updatePatientCondition();
+
       previousTemperatureAlert = null;
     }
-  }, (error) => showConnection("Temperature read error: " + error.message, true));
+
+  }, (error) => {
+    showConnection("Temperature read error: " + error.message, true);
+  });
+
 
   /* BODY TEMPERATURE SENSOR */
+
   database.ref("patient/bodyTemperature").on("value", (snapshot) => {
+
     const value = parseValidNumber(snapshot.val());
 
     if (isValidBodyTemperature(value)) {
+
       addReading("bodyTemperature", value);
+
     } else {
+
       latestReadings.bodyTemperature = null;
       updateBodyTemperatureDisplay();
     }
+
   }, (error) => {
+
     latestReadings.bodyTemperature = null;
     updateBodyTemperatureDisplay();
-    showConnection("Body-temperature read error: " + error.message, true);
+
+    showConnection(
+      "Body-temperature read error: " + error.message,
+      true
+    );
   });
 
+
   /* HUMIDITY */
+
   database.ref("patient/humidity").on("value", (snapshot) => {
+
     const value = parseValidNumber(snapshot.val());
-    latestReadings.humidity = value !== null && value >= 0 && value <= 100
-      ? value : null;
+
+    latestReadings.humidity =
+      value !== null && value >= 0 && value <= 100
+        ? value
+        : null;
 
     $("humidity").textContent =
-      latestReadings.humidity === null ? "--" : latestReadings.humidity.toFixed(1);
-  }, (error) => showConnection("Humidity read error: " + error.message, true));
+      latestReadings.humidity === null
+        ? "--"
+        : latestReadings.humidity.toFixed(1);
+
+    const humidityAlertNow =
+      dhtSensorConnected === true &&
+      latestReadings.humidity !== null &&
+      (
+        latestReadings.humidity < HUMIDITY_LOW_LIMIT ||
+        latestReadings.humidity > HUMIDITY_HIGH_LIMIT
+      );
+
+    if (humidityAlertNow && previousHumidityAlert !== true) {
+
+      showPatientCareNotification(
+        "PatientCare Humidity Alert",
+        "Humidity is outside the configured project reference range: " +
+          latestReadings.humidity.toFixed(1) + "%.",
+        "patientcare-humidity"
+      );
+    }
+
+    previousHumidityAlert = humidityAlertNow;
+
+  }, (error) => {
+    showConnection("Humidity read error: " + error.message, true);
+  });
+
 
   /* DHT11 VALIDITY */
+
   database.ref("patient/dhtValid").on("value", (snapshot) => {
+
     const value = snapshot.val();
 
     dhtSensorConnected =
       value === true ? true :
-      value === false ? false : null;
+      value === false ? false :
+      null;
 
     if (dhtSensorConnected !== true) {
+
       latestReadings.temperature = null;
+
+      previousTemperatureAlert = null;
+      previousHumidityAlert = null;
+
       updateAverageDisplay();
+
+    } else {
+
+      // Recheck the latest sensor values when DHT11 becomes valid.
+      const temp = latestReadings.temperature;
+      const humidity = latestReadings.humidity;
+
+      if (temp !== null && isValidTemperature(temp)) {
+        addReading("temperature", temp);
+      }
+
+      if (humidity !== null) {
+
+        const humidityAlertNow =
+          humidity < HUMIDITY_LOW_LIMIT ||
+          humidity > HUMIDITY_HIGH_LIMIT;
+
+        if (humidityAlertNow && previousHumidityAlert !== true) {
+
+          showPatientCareNotification(
+            "PatientCare Humidity Alert",
+            "Humidity is outside the configured project reference range: " +
+              humidity.toFixed(1) + "%.",
+            "patientcare-humidity"
+          );
+        }
+
+        previousHumidityAlert = humidityAlertNow;
+      }
     }
 
     updateDhtStatusDisplay();
     updateEnvironmentAlerts();
     updatePatientCondition();
+
   }, (error) => {
+
     dhtSensorConnected = null;
     latestReadings.temperature = null;
+
     updateDhtStatusDisplay();
     updateEnvironmentAlerts();
     updateAverageDisplay();
     updatePatientCondition();
-    showConnection("DHT11 status error: " + error.message, true);
+
+    showConnection(
+      "DHT11 status error: " + error.message,
+      true
+    );
   });
 
+
   /* TEMPERATURE ALERT FLAG */
-  database.ref("patient/alerts/temperatureOutsideReference").on(
-    "value",
-    (snapshot) => {
-      temperatureAlertActive = snapshot.val() === true;
-      updateEnvironmentAlerts();
-    },
-    (error) => showConnection("Temperature alert error: " + error.message, true)
-  );
+
+  database.ref(
+    "patient/alerts/temperatureOutsideReference"
+  ).on("value", (snapshot) => {
+
+    const active = snapshot.val() === true;
+
+    temperatureAlertActive = active;
+
+    if (active && previousTemperatureAlert !== true) {
+
+      addEmergencyMessage(
+        "PatientCare Room Temperature Alert",
+        "ESP32 reports room temperature outside the configured reference range.",
+        "warning"
+      );
+    }
+
+    previousTemperatureAlert = active;
+
+    updateEnvironmentAlerts();
+
+  }, (error) => {
+    showConnection("Temperature alert error: " + error.message, true);
+  });
+
 
   /* HUMIDITY ALERT FLAG */
-  database.ref("patient/alerts/humidityOutsideReference").on(
-    "value",
-    (snapshot) => {
-      humidityAlertActive = snapshot.val() === true;
-      updateEnvironmentAlerts();
-    },
-    (error) => showConnection("Humidity alert error: " + error.message, true)
-  );
+
+  database.ref(
+    "patient/alerts/humidityOutsideReference"
+  ).on("value", (snapshot) => {
+
+    const active = snapshot.val() === true;
+
+    humidityAlertActive = active;
+
+    if (active && previousHumidityAlert !== true) {
+
+      addEmergencyMessage(
+        "PatientCare Humidity Alert",
+        "ESP32 reports humidity outside the configured reference range.",
+        "warning"
+      );
+    }
+
+    previousHumidityAlert = active;
+
+    updateEnvironmentAlerts();
+
+  }, (error) => {
+    showConnection("Humidity alert error: " + error.message, true);
+  });
+
 
   /* PHYSICAL SOS */
+
   database.ref("patient/sos/active").on("value", (snapshot) => {
+
     const active = snapshot.val() === true;
 
     if (active && previousSosActive !== true) {
+
       showPatientCareNotification(
         "PatientCare Physical SOS",
         "The physical SOS button is active. Check the patient.",
@@ -1319,347 +2324,597 @@ function startDatabaseListeners() {
     previousSosActive = active;
 
     database.ref("patient/sos/timestamp").once("value")
-      .then((timeSnapshot) => setSosStatus(active, timeSnapshot.val()))
-      .catch(() => setSosStatus(active, null));
+
+      .then((timeSnapshot) => {
+        setSosStatus(active, timeSnapshot.val());
+      })
+
+      .catch(() => {
+        setSosStatus(active, null);
+      });
+
   }, (error) => {
+
     setSosUnavailable();
-    console.error("Physical SOS listener error:", error);
+
+    console.error(
+      "Physical SOS listener error:",
+      error
+    );
   });
 
+
   /* GSM SOS */
+
   database.ref("patient/gsmSos").on("value", (snapshot) => {
+
     const data = snapshot.val();
+
     setGsmSosStatus(data);
 
-    const active = !!(data && data.active === true);
+    const active =
+      !!(data && data.active === true);
 
     if (active && previousGsmSosActive !== true) {
+
       showPatientCareNotification(
         "PatientCare GSM SOS",
         "The GSM SOS button is active. Check the GSM SMS and call status.",
         "patientcare-gsm-sos"
       );
     }
+
     previousGsmSosActive = active;
+
   }, (error) => {
+
     $("gsmSosCard").hidden = true;
-    console.error("GSM SOS listener error:", error);
+
+    console.error(
+      "GSM SOS listener error:",
+      error
+    );
   });
 
+
   /* MEDICINE REMINDERS */
-  const remindersRef = database.ref("medicineReminders");
+
+  const remindersRef =
+    database.ref("medicineReminders");
 
   remindersRef.on("value", (snapshot) => {
+
     const list = $("reminderList");
+
     list.replaceChildren();
 
     const reminders = snapshot.val();
 
     if (!reminders) {
+
       const empty = document.createElement("p");
+
       empty.className = "hint";
       empty.textContent = "No reminders added yet.";
+
       list.appendChild(empty);
+
       return;
     }
 
     Object.entries(reminders).forEach(([key, item]) => {
+
       const row = document.createElement("div");
+
       row.className = "reminder-item";
 
       const text = document.createElement("span");
+
       text.textContent =
-        (item.name || "Medicine") + " — " + (item.time || "No time");
+        (item.name || "Medicine") +
+        " — " +
+        (item.time || "No time");
 
       const remove = document.createElement("button");
+
       remove.type = "button";
       remove.className = "small-button danger-button";
       remove.textContent = "Delete";
 
       remove.addEventListener("click", () => {
+
         remindersRef.child(key).remove().catch((error) => {
-          alert("Could not delete reminder: " + error.message);
+
+          alert(
+            "Could not delete reminder: " + error.message
+          );
         });
       });
 
       row.append(text, remove);
+
       list.appendChild(row);
     });
+
   }, (error) => {
+
     const message = document.createElement("p");
+
     message.className = "hint";
+
     message.textContent =
       "Could not load reminders: " + error.message +
       ". Check Firebase Database Rules.";
+
     $("reminderList").replaceChildren(message);
   });
+
 }
 
+
 /* FIREBASE CLOUD MESSAGING SETUP */
+
 async function configureMessaging() {
+
   const status = $("notificationStatus");
   const button = $("enableNotifications");
+
   button.disabled = true;
 
   try {
-    if (!("Notification" in window) || !("serviceWorker" in navigator)) {
-      throw new Error("This browser does not support notifications or service workers.");
-    }
-    if (!window.isSecureContext) {
-      throw new Error("Open the HTTPS GitHub Pages website.");
-    }
-    if (!(await firebase.messaging.isSupported())) {
-      throw new Error("Firebase Messaging is not supported in this browser.");
+
+    if (!("Notification" in window) ||
+        !("serviceWorker" in navigator)) {
+
+      throw new Error(
+        "This browser does not support notifications or service workers."
+      );
     }
 
-    status.textContent = "Requesting notification permission...";
-    const permission = await Notification.requestPermission();
+    if (!window.isSecureContext) {
+
+      throw new Error(
+        "Open the HTTPS GitHub Pages website."
+      );
+    }
+
+    if (!(await firebase.messaging.isSupported())) {
+
+      throw new Error(
+        "Firebase Messaging is not supported in this browser."
+      );
+    }
+
+    status.textContent =
+      "Requesting notification permission...";
+
+    const permission =
+      await Notification.requestPermission();
 
     if (permission !== "granted") {
-      status.textContent = "Notification permission was not granted.";
+
+      status.textContent =
+        "Notification permission was not granted.";
+
       return;
     }
 
-    const registration = await navigator.serviceWorker.register(
-      "./firebase-messaging-sw.js",
-      { updateViaCache: "none" }
-    );
+    const registration =
+      await navigator.serviceWorker.register(
+        "./firebase-messaging-sw.js",
+        { updateViaCache: "none" }
+      );
 
     await registration.update();
-    const activeRegistration = await navigator.serviceWorker.ready;
+
+    const activeRegistration =
+      await navigator.serviceWorker.ready;
 
     if (!activeRegistration.active) {
-      throw new Error("Service worker is not active. Reload and try again.");
+
+      throw new Error(
+        "Service worker is not active. Reload and try again."
+      );
     }
 
     messaging = firebase.messaging();
 
     messaging.onMessage((payload) => {
-      const title = payload.notification?.title || "PatientCare Alert";
-      const body = payload.notification?.body ||
+
+      const title =
+        payload.notification?.title ||
+        "PatientCare Alert";
+
+      const body =
+        payload.notification?.body ||
         "Please check your PatientCare dashboard.";
 
-      status.textContent = "Notification received: " + title;
+      status.textContent =
+        "Notification received: " + title;
+
+      // Record FCM messages in Emergency as well.
+      addEmergencyMessage(title, body, "danger");
 
       if (Notification.permission === "granted") {
-        showPatientCareNotification(title, body, "patientcare-fcm-message");
+
+        showPatientCareNotification(
+          title,
+          body,
+          "patientcare-fcm-message"
+        );
       }
     });
 
     const token = await messaging.getToken({
+
       vapidKey: VAPID_KEY,
+
       serviceWorkerRegistration: activeRegistration
+
     });
 
-    if (!token) throw new Error("Firebase did not return a registration token.");
+    if (!token) {
+
+      throw new Error(
+        "Firebase did not return a registration token."
+      );
+    }
 
     status.textContent =
-      "Browser registered. Dashboard alerts can appear while this page is open. " +
-      "Background FCM requires a trusted message sender.";
+      "Browser registered. Dashboard alerts can appear while this page is open. Background FCM requires a trusted message sender.";
 
   } catch (error) {
+
     status.textContent =
-      "Notification setup failed: " + (error.message || String(error));
-    console.error("PatientCare notification setup:", error);
+      "Notification setup failed: " +
+      (error.message || String(error));
+
+    console.error(
+      "PatientCare notification setup:",
+      error
+    );
+
   } finally {
+
     button.disabled = false;
   }
 }
 
+
 /* LOGIN */
+
 $("loginForm").addEventListener("submit", async (event) => {
+
   event.preventDefault();
 
   const email = $("loginEmail").value.trim();
   const password = $("loginPassword").value;
+
   const button = $("loginButton");
 
   button.disabled = true;
   button.textContent = "Signing in...";
+
   setLoginMessage("");
 
   try {
-    if (!window.firebase || typeof firebase.auth !== "function") {
-      throw new Error("Firebase did not load. Check your internet connection.");
+
+    if (!window.firebase ||
+        typeof firebase.auth !== "function") {
+
+      throw new Error(
+        "Firebase did not load. Check your internet connection."
+      );
     }
 
     if (!auth) {
-      if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
+
+      if (!firebase.apps.length) {
+        firebase.initializeApp(firebaseConfig);
+      }
+
       auth = firebase.auth();
       database = firebase.database();
     }
 
-    await auth.signInWithEmailAndPassword(email, password);
+    await auth.signInWithEmailAndPassword(
+      email,
+      password
+    );
 
   } catch (error) {
+
     console.error("Sign-in error:", error);
 
-    let message = "Sign-in failed. Please try again.";
+    let message =
+      "Sign-in failed. Please try again.";
 
     if ([
       "auth/invalid-credential",
       "auth/wrong-password",
       "auth/user-not-found"
     ].includes(error.code)) {
-      message = "Email or password is incorrect.";
+
+      message =
+        "Email or password is incorrect.";
+
     } else if (error.code === "auth/invalid-email") {
-      message = "Enter a valid email address.";
+
+      message =
+        "Enter a valid email address.";
+
     } else if (error.code === "auth/too-many-requests") {
-      message = "Too many attempts. Wait a while and try again.";
+
+      message =
+        "Too many attempts. Wait a while and try again.";
+
     } else if (error.code === "auth/unauthorized-domain") {
+
       message =
         "This website domain is not authorized. Add your GitHub Pages hostname in Firebase Authentication → Settings → Authorized domains.";
+
     } else if (error.code === "auth/operation-not-allowed") {
-      message = "Enable Email/Password sign-in in Firebase Authentication.";
+
+      message =
+        "Enable Email/Password sign-in in Firebase Authentication.";
+
     } else if (error.code === "auth/network-request-failed") {
-      message = "Network request failed. Check your internet connection.";
+
+      message =
+        "Network request failed. Check your internet connection.";
+
     } else if (error.code) {
-      message = "Firebase error (" + error.code + "): " + error.message;
+
+      message =
+        "Firebase error (" + error.code + "): " +
+        error.message;
+
     } else if (error.message) {
+
       message = error.message;
     }
 
     setLoginMessage(message, true);
+
   } finally {
+
     button.disabled = false;
     button.textContent = "Sign In";
   }
 });
 
+
 /* FIREBASE INITIALISATION AND AUTH STATE */
+
 try {
-  if (!window.firebase || typeof firebase.initializeApp !== "function") {
-    throw new Error("Firebase scripts did not load. Check internet and reload.");
+
+  if (!window.firebase ||
+      typeof firebase.initializeApp !== "function") {
+
+    throw new Error(
+      "Firebase scripts did not load. Check internet and reload."
+    );
   }
 
-  if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
+  if (!firebase.apps.length) {
+    firebase.initializeApp(firebaseConfig);
+  }
 
   auth = firebase.auth();
   database = firebase.database();
 
-  $("enableNotifications").addEventListener("click", configureMessaging);
+  $("enableNotifications").addEventListener(
+    "click",
+    configureMessaging
+  );
 
   $("signOutButton").addEventListener("click", async () => {
+
     try {
+
       stopDatabaseListeners();
+
       await auth.signOut();
+
     } catch (error) {
-      alert("Could not sign out: " + error.message);
+
+      alert(
+        "Could not sign out: " + error.message
+      );
     }
   });
 
   auth.onAuthStateChanged((user) => {
+
     signedInUser = user;
 
     if (user) {
+
       $("loginSection").hidden = true;
       $("dashboardApp").hidden = false;
+
       $("signedInLabel").textContent =
-        "Signed in as " + (user.email || "Firebase user");
+        "Signed in as " +
+        (user.email || "Firebase user");
 
       setLoginMessage("");
+
       startDatabaseListeners();
 
     } else {
+
       stopDatabaseListeners();
+
       $("dashboardApp").hidden = true;
       $("loginSection").hidden = false;
+
       $("signedInLabel").textContent = "Signed out";
 
-      showConnection("Sign in to connect to Firebase.");
+      showConnection(
+        "Sign in to connect to Firebase."
+      );
+
       clearSessionData();
 
       $("dhtConnectionDetails").hidden = true;
-      $("toggleDhtStatus").textContent = "Show DHT11 connection status";
-      $("toggleDhtStatus").setAttribute("aria-expanded", "false");
+
+      $("toggleDhtStatus").textContent =
+        "Show DHT11 connection status";
+
+      $("toggleDhtStatus").setAttribute(
+        "aria-expanded",
+        "false"
+      );
     }
   });
 
 } catch (error) {
-  setLoginMessage("Firebase could not start: " + error.message, true);
-  showConnection("Firebase could not start: " + error.message, true);
+
+  setLoginMessage(
+    "Firebase could not start: " + error.message,
+    true
+  );
+
+  showConnection(
+    "Firebase could not start: " + error.message,
+    true
+  );
 }
 
+
 /* CAMERA FUNCTIONS */
+
 function normaliseCameraUrl(rawValue) {
+
   let value = rawValue.trim();
 
   if (!value) {
-    throw new Error("Enter the ESP32-CAM IP address or stream URL.");
+
+    throw new Error(
+      "Enter the ESP32-CAM IP address or stream URL."
+    );
   }
-  if (!/^https?:\/\//i.test(value)) value = "http://" + value;
+
+  if (!/^https?:\/\//i.test(value)) {
+    value = "http://" + value;
+  }
 
   let parsed;
+
   try {
+
     parsed = new URL(value);
+
   } catch {
-    throw new Error("Enter a valid camera IP address or URL.");
+
+    throw new Error(
+      "Enter a valid camera IP address or URL."
+    );
   }
 
   if (!["http:", "https:"].includes(parsed.protocol)) {
-    throw new Error("Use an HTTP or HTTPS camera URL.");
+
+    throw new Error(
+      "Use an HTTP or HTTPS camera URL."
+    );
   }
+
   if (parsed.username || parsed.password) {
-    throw new Error("Do not put login credentials in the camera URL.");
+
+    throw new Error(
+      "Do not put login credentials in the camera URL."
+    );
   }
 
   if (parsed.pathname === "/" || parsed.pathname === "") {
-    if (!parsed.port) parsed.port = "81";
+
+    if (!parsed.port) {
+      parsed.port = "81";
+    }
+
     parsed.pathname = "/stream";
   }
+
   return parsed.href;
 }
 
 function cameraCandidates(inputUrl) {
+
   const first = new URL(inputUrl);
+
   const host = first.hostname;
   const protocol = first.protocol;
 
   return [...new Set([
+
     first.href,
+
     protocol + "//" + host + ":81/stream",
+
     protocol + "//" + host + "/stream"
+
   ])];
 }
 
 function showCameraError(frame, messageText) {
+
   const message = document.createElement("div");
+
   message.className = "camera-placeholder";
   message.textContent = messageText;
+
   frame.replaceChildren(message);
+
   $("cameraStatus").textContent = messageText;
 }
 
 $("toggleCamera").addEventListener("click", () => {
+
   const frame = $("cameraFrame");
   const button = $("toggleCamera");
   const status = $("cameraStatus");
 
   if (cameraVisible) {
+
     frame.hidden = true;
     frame.replaceChildren();
+
     cameraVisible = false;
+
     button.textContent = "Show Camera";
     status.textContent = "Camera is hidden.";
+
     return;
   }
 
   let candidates;
+
   try {
-    candidates = cameraCandidates(normaliseCameraUrl($("cameraUrl").value));
+
+    candidates = cameraCandidates(
+      normaliseCameraUrl($("cameraUrl").value)
+    );
+
   } catch (error) {
+
     alert(error.message);
     return;
   }
 
   frame.replaceChildren();
   frame.hidden = false;
+
   cameraVisible = true;
+
   button.textContent = "Hide Camera";
-  status.textContent = "Connecting to ESP32-CAM...";
+
+  status.textContent =
+    "Connecting to ESP32-CAM...";
 
   const image = document.createElement("img");
+
   image.alt = "ESP32-CAM live stream";
+
   frame.appendChild(image);
 
   let attempt = 0;
@@ -1667,81 +2922,132 @@ $("toggleCamera").addEventListener("click", () => {
   let timeoutId = null;
 
   function tryNextCameraAddress() {
+
     if (finished) return;
 
     if (timeoutId !== null) {
+
       clearTimeout(timeoutId);
       timeoutId = null;
     }
 
     if (attempt >= candidates.length) {
+
       finished = true;
+
       showCameraError(
         frame,
         "Camera stream could not load. Check the ESP32-CAM IP, Wi-Fi network and stream URL. HTTPS GitHub Pages may block an HTTP stream as mixed content."
       );
+
       return;
     }
 
     const candidate = candidates[attempt++];
+
     status.textContent =
-      "Trying camera address " + attempt + " of " + candidates.length + "...";
+      "Trying camera address " +
+      attempt + " of " + candidates.length + "...";
+
     image.src = candidate;
 
     timeoutId = setTimeout(() => {
-      if (!finished) tryNextCameraAddress();
+
+      if (!finished) {
+        tryNextCameraAddress();
+      }
+
     }, 9000);
   }
 
   image.onload = () => {
+
     if (finished) return;
+
     finished = true;
-    if (timeoutId !== null) clearTimeout(timeoutId);
-    status.textContent = "Camera stream connected.";
+
+    if (timeoutId !== null) {
+      clearTimeout(timeoutId);
+    }
+
+    status.textContent =
+      "Camera stream connected.";
   };
 
   image.onerror = () => {
-    if (!finished) tryNextCameraAddress();
+
+    if (!finished) {
+      tryNextCameraAddress();
+    }
   };
 
   tryNextCameraAddress();
 });
 
 $("openCameraStream").addEventListener("click", () => {
+
   try {
-    const url = normaliseCameraUrl($("cameraUrl").value);
-    window.open(url, "_blank", "noopener,noreferrer");
+
+    const url = normaliseCameraUrl(
+      $("cameraUrl").value
+    );
+
+    window.open(
+      url,
+      "_blank",
+      "noopener,noreferrer"
+    );
+
     $("cameraStatus").textContent =
       "Opened the camera stream in a separate browser tab if pop-ups are allowed.";
+
   } catch (error) {
+
     $("cameraStatus").textContent = error.message;
   }
 });
 
+
 /* MEDICINE REMINDERS */
+
 $("addReminder").addEventListener("click", async () => {
+
   const name = $("medicineName").value.trim();
   const time = $("medicineTime").value;
 
   if (!name || !time) {
-    alert("Enter both a reminder name and time.");
+
+    alert(
+      "Enter both a reminder name and time."
+    );
+
     return;
   }
+
   if (!database || !auth || !auth.currentUser) {
-    alert("Please sign in before adding a reminder.");
+
+    alert(
+      "Please sign in before adding a reminder."
+    );
+
     return;
   }
 
   try {
+
     await database.ref("medicineReminders").push({
+
       name,
       time,
       createdAt: Date.now()
+
     });
 
     $("medicineName").value = "";
     $("medicineTime").value = "";
+
   } catch (error) {
+
     alert(
       "Could not save reminder: " + error.message +
       ". Check Firebase Database Rules."
@@ -1749,10 +3055,15 @@ $("addReminder").addEventListener("click", async () => {
   }
 });
 
+
 /* INITIAL DISPLAY */
+
 updateAverageDisplay();
 updatePatientCondition();
 updateBodyTemperatureDisplay();
+renderEmergencyMessages();
+
 </script>
+
 </body>
 </html>
