@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -271,6 +272,34 @@ label {
   border-left-color:#fbbf24;
 }
 
+/* SMALL BODY TEMPERATURE TOGGLE */
+
+.body-temp-toggle-area {
+  display:flex;
+  justify-content:flex-end;
+  align-items:center;
+  margin-top:5px;
+  padding:4px 0;
+}
+
+.body-temp-toggle-button {
+  background:transparent;
+  color:#64748b;
+  border:1px solid #283650;
+  border-radius:20px;
+  padding:5px 10px;
+  font-size:11px;
+  font-weight:500;
+  opacity:0.65;
+  transition:opacity 0.2s, background 0.2s;
+}
+
+.body-temp-toggle-button:hover {
+  opacity:1;
+  background:var(--panel2);
+  color:var(--text);
+}
+
 footer {
   padding:0 18px 25px;
   color:var(--muted);
@@ -390,7 +419,7 @@ footer {
         <p class="hint">Live DHT11 reading.</p>
       </article>
 
-      <article class="card">
+      <article class="card" id="bodyTemperatureDashboardCard">
         <div class="metric-label">Body Temperature</div>
         <div class="metric">
           <span id="bodyTemperatureDashboard">--</span>
@@ -400,25 +429,6 @@ footer {
       </article>
 
     </div>
-
-    <!-- SHOW BODY TEMPERATURE TAB -->
-
-    <article class="card">
-      <h2>Body Temperature Display</h2>
-      <p class="hint">
-        Show or hide the Body Temperature section and its tab.
-      </p>
-
-      <button id="showBodyTemperatureTab"
-        class="secondary-button"
-        type="button" hidden>
-        Show Body Temperature
-      </button>
-
-      <p id="bodyTemperatureVisibilityStatus" class="hint">
-        Body Temperature section is visible.
-      </p>
-    </article>
 
     <article class="card">
       <h2>Heart Rate History</h2>
@@ -487,6 +497,19 @@ footer {
       <div id="temperatureAlert" class="status-line" hidden></div>
       <div id="humidityAlert" class="status-line" hidden></div>
     </article>
+
+    <!-- SMALL TOGGLE AT THE VERY END OF DASHBOARD -->
+
+    <div class="body-temp-toggle-area">
+      <button
+        id="toggleBodyTemperature"
+        class="body-temp-toggle-button"
+        type="button"
+        aria-label="Hide Body Temperature section"
+        title="Show or hide Body Temperature">
+        °C
+      </button>
+    </div>
 
   </section>
 
@@ -610,15 +633,7 @@ footer {
 
     <article class="card">
 
-      <div class="inline" style="justify-content:space-between">
-        <h2>Body Temperature Monitoring</h2>
-
-        <button id="hideBodyTemperatureTab"
-          class="secondary-button"
-          type="button">
-          Hide Body Temperature
-        </button>
-      </div>
+      <h2>Body Temperature Monitoring</h2>
 
       <p class="hint">
         This section reads from the separate body-temperature sensor.
@@ -681,10 +696,7 @@ footer {
 
   <section id="emergency" class="tab-panel">
 
-    <!-- EMERGENCY ALERT CENTRE -->
-
     <article class="card">
-
       <h2>Emergency Alert Centre</h2>
 
       <p class="hint">
@@ -705,7 +717,6 @@ footer {
         type="button">
         Clear Alert History
       </button>
-
     </article>
 
     <article id="emergencyStatusCard" class="card" hidden>
@@ -891,6 +902,9 @@ let databaseListenersStarted = false;
 let cameraVisible = false;
 let dhtSensorConnected = null;
 
+/* BODY TEMPERATURE VISIBILITY */
+let bodyTemperatureVisible = true;
+
 let previousSosActive = null;
 let previousGsmSosActive = null;
 let previousHeartRateAlert = null;
@@ -937,6 +951,13 @@ const previousReadings = {
 document.querySelectorAll(".tab-button").forEach((button) => {
   button.addEventListener("click", () => {
 
+    if (
+      button.dataset.tab === "bodyTemperature" &&
+      !bodyTemperatureVisible
+    ) {
+      return;
+    }
+
     document.querySelectorAll(".tab-button").forEach((item) => {
       item.classList.remove("active");
     });
@@ -955,22 +976,48 @@ document.querySelectorAll(".tab-button").forEach((button) => {
 });
 
 
-/* BODY TEMPERATURE TAB HIDE / SHOW */
+/* COMPLETE BODY TEMPERATURE HIDE / SHOW */
 
 function setBodyTemperatureTabVisible(visible) {
 
+  bodyTemperatureVisible = visible;
+
   const tabButton = $("bodyTemperatureTabButton");
   const tabPanel = $("bodyTemperature");
-  const showButton = $("showBodyTemperatureTab");
+  const dashboardCard = $("bodyTemperatureDashboardCard");
+  const sensorStatus = $("bodySensorConnectionDetails");
+  const toggleButton = $("toggleBodyTemperature");
 
+  // Hide or show the navigation tab.
   tabButton.hidden = !visible;
+
+  // Hide or show the complete Body Temperature page.
   tabPanel.hidden = !visible;
-  showButton.hidden = visible;
 
-  $("bodyTemperatureVisibilityStatus").textContent = visible
-    ? "Body Temperature section is visible."
-    : "Body Temperature section is hidden.";
+  // Hide or show the Body Temperature dashboard card.
+  dashboardCard.hidden = !visible;
 
+  // Hide or show the sensor connection status.
+  sensorStatus.hidden = !visible;
+
+  // Keep the small toggle button available.
+  toggleButton.textContent = visible ? "°C" : "+ °C";
+
+  toggleButton.setAttribute(
+    "aria-label",
+    visible
+      ? "Hide Body Temperature section"
+      : "Show Body Temperature section"
+  );
+
+  toggleButton.title = visible
+    ? "Hide Body Temperature"
+    : "Show Body Temperature";
+
+  $("bodyTemperatureVisibilityStatus")?.textContent;
+
+  // If the Body Temperature page is currently open,
+  // return to Dashboard before hiding it.
   if (!visible && tabPanel.classList.contains("active")) {
 
     document.querySelectorAll(".tab-button").forEach((button) => {
@@ -988,12 +1035,8 @@ function setBodyTemperatureTabVisible(visible) {
   }
 }
 
-$("hideBodyTemperatureTab").addEventListener("click", () => {
-  setBodyTemperatureTabVisible(false);
-});
-
-$("showBodyTemperatureTab").addEventListener("click", () => {
-  setBodyTemperatureTabVisible(true);
+$("toggleBodyTemperature").addEventListener("click", () => {
+  setBodyTemperatureTabVisible(!bodyTemperatureVisible);
 });
 
 
@@ -1008,8 +1051,6 @@ function addEmergencyMessage(title, message, type = "danger") {
     type
   };
 
-  // Avoid duplicate entries from the same alert arriving
-  // through both a sensor listener and its Firebase alert flag.
   const duplicate = emergencyMessages.some((old) => {
     return old.title === entry.title &&
       old.message === entry.message &&
@@ -1079,10 +1120,8 @@ function renderEmergencyMessages() {
 }
 
 $("clearEmergencyAlerts").addEventListener("click", () => {
-
   emergencyMessages.length = 0;
   renderEmergencyMessages();
-
 });
 
 
@@ -1160,7 +1199,6 @@ function addReading(metric, rawValue) {
 
   const oldValue = latestReadings[metric];
 
-  // Ignore duplicate Firebase snapshots.
   if (oldValue !== null && oldValue === value) return;
 
   if (oldValue !== null) {
@@ -1532,10 +1570,6 @@ function addHistoryPoint(history, chart, rawValue) {
 /* NOTIFICATIONS AND EMERGENCY MESSAGE RECORDING */
 
 async function showPatientCareNotification(title, body, tag) {
-
-  // IMPORTANT:
-  // Record the alert in Emergency before checking browser permission.
-  // Therefore the Emergency tab works even if notifications are disabled.
 
   addEmergencyMessage(title, body, "danger");
 
@@ -2201,7 +2235,6 @@ function startDatabaseListeners() {
 
     } else {
 
-      // Recheck the latest sensor values when DHT11 becomes valid.
       const temp = latestReadings.temperature;
       const humidity = latestReadings.humidity;
 
@@ -2532,7 +2565,6 @@ async function configureMessaging() {
       status.textContent =
         "Notification received: " + title;
 
-      // Record FCM messages in Emergency as well.
       addEmergencyMessage(title, body, "danger");
 
       if (Notification.permission === "granted") {
@@ -3062,6 +3094,9 @@ updateAverageDisplay();
 updatePatientCondition();
 updateBodyTemperatureDisplay();
 renderEmergencyMessages();
+
+// Start with the Body Temperature section visible.
+setBodyTemperatureTabVisible(true);
 
 </script>
 
